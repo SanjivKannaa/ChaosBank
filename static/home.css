@@ -1,0 +1,140 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+header {
+    background: #0073e6;
+    color: white;
+    text-align: center;
+    padding: 1.5rem 0;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 4.5rem;
+    font-family: 'Lobster', cursive; /* Custom font for the first header */
+}
+
+header p {
+    margin: 0;
+    font-size: 1.5rem;
+    font-family: 'Lobster', cursive; /* Custom font for the first header */
+}
+
+main {
+    padding: 2rem;
+}
+
+.hero {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: #0073e6;
+    color: white;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.hero img {
+    max-width: 100%;
+    height: auto;
+}
+
+.hero h2 {
+    margin-top: 1.5rem;
+    font-size: 2rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin: 1.5rem 0;
+}
+
+.hero .btn {
+    background: white;
+    color: #0073e6;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.3s, color 0.3s;
+}
+
+.hero .btn:hover {
+    background: #005bb5;
+    color: white;
+}
+
+.get-started {
+    text-align: center;
+    padding: 2rem 1rem;
+    background: #e6f0ff;
+    border-radius: 8px;
+}
+
+.get-started h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.get-started p {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.get-started .btn-primary {
+    background: #0073e6;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.get-started .btn-primary:hover {
+    background: #005bb5;
+}
+
+.techstack {
+    margin-bottom: 2rem;
+    display: grid; /* Apply grid display to the container */
+}
+
+.techstack h3 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.techstackimg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* This allows the images to wrap on smaller screens */
+    gap: 10px; /* Optional: adds some space between the images */
+}
+
+.techstackimg img {
+    max-width: 100%; /* Ensures images don't overflow their container */
+    height: auto; /* Maintains aspect ratio */
+}
+
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    background: #333;
+    color: white;
+}
+
+footer a {
+    color: #0073e6;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

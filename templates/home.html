@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reliabank - Reliable Banking for Everyone</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}"> 
+    <style>
+        
+    </style>
+</head>
+<body>
+  <header>
+    <h1>Reliabank</h1>
+    <p>Reliable Banking for Everyone</p>
+  </header>
+
+  <main>
+    <section class="hero">
+      <img src="{{url_for('static', filename='R_logo.png')}}" alt="Reliabank Logo">
+      <h2>Manage your money with ease.</h2>
+      <p>Reliabank offers a user-friendly platform for all your banking needs. Open an account, transfer funds, and track your finances - all from the convenience of your phone or computer.</p>
+      <a href="{{domain}}/auth" class="btn">Open an Account</a>
+    </section>
+
+    <section class="techstack">
+      <h3>How was Reliabank built?</h3>
+      <br>
+      <div class="techstackimg">
+        <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" width="278" height="128">
+        <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" width="278" height="128">
+        <img src="{{url_for('static', filename='docker.png')}}" alt="docker" width="278" height="128">
+        <img src="{{url_for('static', filename='jenkins.png')}}" alt="jenkins" width="270" height="128">
+        <img src="{{url_for('static', filename='nginx.png')}}" alt="nginx" width="278" height="128">
+        <img src="{{url_for('static', filename='k8s.png')}}" alt="kubernetes" width="278" height="128">
+      </div>
+    </section>
+
+    <section class="get-started">
+      <h2>Ready to simplify your banking?</h2>
+      <p>Sign up today and experience the difference with Reliabank.</p>
+      <a href="{{domain}}/auth" class="btn btn-primary">Get Started</a>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Developed by: <a href="https://sanjivkannaa.github.io">J Sanjiv Kannaa</a></p>
+  </footer>
+</body>
+</html>
