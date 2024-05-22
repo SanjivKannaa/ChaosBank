@@ -1,15 +1,51 @@
 import os
 os.system("pip3 install flask")
 os.system("pip3 install pyjwt")
+os.system("pip3 install pymongo")
+os.system("pip install mysql-connector-python")
+os.system("pip install python-dotenv")
 from flask import Flask, request, jsonify, make_response, request, render_template, session, flash, redirect
 import jwt
+from pymongo import MongoClient
+import mysql.connector
 from datetime import datetime, timedelta
 from functools import wraps
+import time
+from dotenv import load_dotenv
+load_dotenv()
 
 
 app = Flask(__name__)
-
 app.config['SECRET_KEY'] = 'u39u5gh3#RF#*35f#F*#%n3u3f3n59u35f#F#G3'
+
+
+
+try:
+    MONGO_URI = os.getenv("MONGODB_URI")
+    client = MongoClient(MONGO_URI)
+    client.admin.command('ping')
+    print("Connection to Mongo DB successful")
+except:
+    print("ERROR CONNECTING TO MONGODB")
+    time.sleep(5)
+    exit()
+
+try:
+    mysql_password = os.getenv("MYSQL_ROOT_PASSWORD")
+    mysql_db = os.getenv("MYSQL_DB")
+    connection = mysql.connector.connect(
+        host="mysql",
+        user="root",
+        passwd=mysql_password,
+        # database=mysql_db
+    )
+    print("Connection to MySQL DB successful")
+except Exception as e:
+    print("ERROR CONNECTIONG TO MySQL"+str(e))
+    time.sleep(5)
+    exit()
+
+
 
 def token_required(func):
     @wraps(func)

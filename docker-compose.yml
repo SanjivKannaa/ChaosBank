@@ -5,17 +5,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
+    restart: always
     volumes:
       - ./:/app
     ports:
       - "${port}:5000"
     depends_on:
-      - db
+      - mongodb
+      - mysql
     networks:
       - reliabank-network
     command: ["python3", "main.py"]
-  db:
-    container_name: reliabank-db
+  mongodb:
+    container_name: reliabank-mongodb
     image: mongo
     expose: 
       - 27017
@@ -23,9 +25,21 @@ services:
       - mongodbdata:/data/db
     networks:
       - reliabank-network
-    
+  mysql:
+    container_name: reliabank-mysql
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    expose:
+      - 3306
+    networks:
+      - reliabank-network
+    volumes:
+      - mysql_data:/var/lib/mysql
 networks:
   reliabank-network:
     driver: bridge
 volumes:
   mongodbdata:
+  mysql_data:
