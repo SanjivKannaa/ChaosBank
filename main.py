@@ -9,6 +9,7 @@ from flask import Flask, request, jsonify, make_response, request, render_templa
 import jwt
 from pymongo import MongoClient
 import mysql.connector
+from mysql.connector import errorcode
 from datetime import datetime, timedelta
 from functools import wraps
 import time
@@ -109,7 +110,7 @@ def login():
         cursor.execute("select password from users where username=\""+login_creds["username"]+"\"")
         login_creds["hashed_password"] = cursor.fetchall()[0][0]
     except:
-        return make_response('User Not Found', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed "'})
+        return render_template('login.html', error="User Not Found")
     # return login_creds
     if login_creds["username"]:
         if verify_password(login_creds["password"], login_creds["hashed_password"]): #hash_password(request.form['password']) == login_creds["hashed_password"]:
@@ -122,9 +123,9 @@ def login():
             # res.set_cookie('token', token, httponly=True, samesite='Strict')
             return res
         else:
-            return make_response('Wrong password', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed "'})    
+            return render_template("login.html", error="Wrong Password")
     else:
-        return make_response('User Not Found', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed "'})
+        return render_template('login.html', error="User Not Found")
 
 
 @app.route('/logout', methods=['GET'])
@@ -153,14 +154,13 @@ def register():
     if request.form["initial_balance"] != "":
         login_creds["balance"] = int(request.form["initial_balance"])
     if login_creds["password"]!=login_creds["password2"]:
-        return make_response('Password mismatch', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed "'})
+        return render_template("register.html", error='Password mismatch')
     else:
         login_creds["password"] = hash_password(login_creds["password"])
-        cursor.execute("select max(scan_pay_account) from users")
+        cursor.execute("select max(scan_pay_account) from users where scan_pay_account <> \"None\"")
         prev_max_scan_pay = cursor.fetchall()
-        cursor.execute("select max(normal_pay_account) from users")
+        cursor.execute("select max(normal_pay_account) from users where normal_pay_account <> \"None\"")
         prev_max_normal_pay = cursor.fetchall()
-        # return [prev_max_scan_pay, prev_max_normal_pay]
         if prev_max_scan_pay==[[]]:
             prev_max_scan_pay = "00000001"
         else:
@@ -172,7 +172,15 @@ def register():
             prev_max_normal_pay = str(int(prev_max_normal_pay[0][0]) + 1)
             prev_max_normal_pay = "0"*(10-len(prev_max_normal_pay)) + prev_max_normal_pay
         if login_creds["account_type"] == "scan_pay":
-            cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\")".format(login_creds["username"], login_creds["password"], prev_max_scan_pay, None, login_creds["balance"]))
+            try:
+                cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\")".format(login_creds["username"], login_creds["password"], prev_max_scan_pay, None, login_creds["balance"]))
+            except mysql.connector.Error as err:
+                if err.errno == errorcode.ER_DUP_ENTRY:
+                    return render_template("register.html", error="Username already exists")
+                elif err.errno == errorcode.ER_DATA_TOO_LONG:
+                    return render_template("register.html", error="Too long")
+                else:
+                    return render_template("register.html", error=str(err))
             connection.commit()
             token = jwt.encode({
                 'username': login_creds['username'],
@@ -183,7 +191,15 @@ def register():
             # res.set_cookie('token', token, httponly=True, samesite='Strict')
             return res
         elif login_creds["account_type"] == "normal_pay":
-            cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\")".format(login_creds["username"], login_creds["password"], None, prev_max_normal_pay, login_creds["balance"]))
+            try:
+                cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\")".format(login_creds["username"], login_creds["password"], None, prev_max_normal_pay, login_creds["balance"]))
+            except mysql.connector.Error as err:
+                if err.errno == errorcode.ER_DUP_ENTRY:
+                    return render_template("register.html", error="Username already exists")
+                elif err.errno == errorcode.ER_DATA_TOO_LONG:
+                    return render_template("register.html", error="Too long")
+                else:
+                    return render_template("register.html", error=str(err))
             connection.commit()
             token = jwt.encode({
                 'username': login_creds['username'],
@@ -194,7 +210,15 @@ def register():
             # res.set_cookie('token', token, httponly=True, samesite='Strict')
             return res
         elif login_creds["account_type"] == "both":
-            cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\")".format(login_creds["username"], login_creds["password"], prev_max_scan_pay, prev_max_normal_pay, login_creds["balance"]))
+            try:
+                cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\")".format(login_creds["username"], login_creds["password"], prev_max_scan_pay, prev_max_normal_pay, login_creds["balance"]))
+            except mysql.connector.Error as err:
+                if err.errno == errorcode.ER_DUP_ENTRY:
+                    return render_template("register.html", error="Username already exists")
+                elif err.errno == errorcode.ER_DATA_TOO_LONG:
+                    return render_template("register.html", error="Too long")
+                else:
+                    return render_template("register.html", error=str(err))
             connection.commit()
             token = jwt.encode({
                 'username': login_creds['username'],

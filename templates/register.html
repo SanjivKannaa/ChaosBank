@@ -57,6 +57,10 @@
         .register-container input[type="submit"]:hover {
             background-color: #0056b3;
         }
+
+        .error{
+            color: red;
+        }
     </style>
 </head>
 
@@ -73,6 +77,7 @@
                 <option value="both">Both</option>
             </select><br>
             <input type="number" name="initial_balance" id="initial_balance" placeholder="Initial Balance" required> <br>
+            <p class="error">{{ error }}</p>
             <input type="submit" value="Register">
         </form>
     </div>
