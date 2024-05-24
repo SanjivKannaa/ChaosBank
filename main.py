@@ -56,15 +56,15 @@ try:
     try:
         cursor.execute("use "+mysql_db)
         cursor.execute("create table if not exists users (username varchar(20) primary key, password varchar(60) not null, scan_pay_account char(10), normal_pay_account char(10), balance int)")
-        cursor.execute("create table if not exists scan_pay_transactions (transaction_number int, _from varchar(20) not null, _to varchar(20) not null)")
-        cursor.execute("create table if not exists normal_pay_transactions (transaction_number int, _from varchar(20) not null, _to varchar(20) not null)")
+        cursor.execute("create table if not exists scan_pay_transactions (transaction_number int primary key, date datetime not null, _from char(20) not null, _to char(20) not null, amount int not null)")
+        cursor.execute("create table if not exists normal_pay_transactions (transaction_number int primary key, date datetime not null, _from char(20) not null, _to char(20) not null, amount int not null)")
         try:
             cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\")".format("dummy_user", "dummy_password", "0000000001", "0000000001", 0))
         except:
             print("dummy user already exists")
-        connection.commit()
     except Exception as e:
         print(e)
+    connection.commit()
     print("Connection to MySQL DB successful")
 except Exception as e:
     print("ERROR CONNECTIONG TO MySQL"+str(e))
@@ -241,6 +241,26 @@ def dashboard():
         data = cursor.fetchone()
         username, scan_pay_account, normal_pay_account, balance = str(data[0]), str(data[2]), str(data[3]), str(data[4])
         return render_template("dashboard.html", username=username, balance=balance, scan_pay_account=scan_pay_account, normal_pay_account=normal_pay_account)
+    except Exception as e:
+        # return str(e)
+        return redirect("/login")
+
+
+@app.route("/view_transactions", methods=["GET"])
+def view_transactions():
+    cookies = str(session)
+    try:
+        token = session["token"]
+        username = str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["username"])
+        cursor.execute("select scan_pay_account from users where username=\""+username+"\"")
+        scan_pay_account_number = cursor.fetchone()[0]
+        cursor.execute("select normal_pay_account from users where username=\""+username+"\"")
+        normal_pay_account_number = cursor.fetchone()[0]
+        cursor.execute("select * from scan_pay_transactions where _from=\""+scan_pay_account_number+"\""+" or _to=\""+scan_pay_account_number+"\"")
+        scan_pay_transactions = cursor.fetchall()
+        cursor.execute("select * from normal_pay_transactions where _from=\""+normal_pay_account_number+"\""+" or _to=\""+normal_pay_account_number+"\"")
+        normal_pay_transactions = cursor.fetchall()
+        return render_template("view_transactions.html", scan_pay_transactions=scan_pay_transactions, normal_pay_transactions=normal_pay_transactions)
     except Exception as e:
         return str(e)
         # return redirect("/login")
