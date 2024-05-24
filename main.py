@@ -105,8 +105,11 @@ def login():
         "username": request.form['username'],
         "password": request.form['password']
     }
-    cursor.execute("select password from users where username=\""+login_creds["username"]+"\"")
-    login_creds["hashed_password"] = cursor.fetchall()[0][0]
+    try:
+        cursor.execute("select password from users where username=\""+login_creds["username"]+"\"")
+        login_creds["hashed_password"] = cursor.fetchall()[0][0]
+    except:
+        return make_response('User Not Found', 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed "'})
     # return login_creds
     if login_creds["username"]:
         if verify_password(login_creds["password"], login_creds["hashed_password"]): #hash_password(request.form['password']) == login_creds["hashed_password"]:
@@ -161,11 +164,13 @@ def register():
         if prev_max_scan_pay==[[]]:
             prev_max_scan_pay = "00000001"
         else:
-            prev_max_scan_pay = int(prev_max_scan_pay[0][0]) + 1
+            prev_max_scan_pay = str(int(prev_max_scan_pay[0][0]) + 1)
+            prev_max_scan_pay = "0"*(10-len(prev_max_scan_pay)) + prev_max_scan_pay
         if prev_max_normal_pay==[[]]:
             prev_max_normal_pay = "00000001"
         else:
-            prev_max_normal_pay = int(prev_max_normal_pay[0][0]) + 1
+            prev_max_normal_pay = str(int(prev_max_normal_pay[0][0]) + 1)
+            prev_max_normal_pay = "0"*(10-len(prev_max_normal_pay)) + prev_max_normal_pay
         if login_creds["account_type"] == "scan_pay":
             cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\")".format(login_creds["username"], login_creds["password"], prev_max_scan_pay, None, login_creds["balance"]))
             connection.commit()
@@ -208,9 +213,13 @@ def dashboard():
     try:
         token = session["token"]
         username = str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["username"])
+        cursor.execute("select * from users where username=\""+username+"\"")
+        data = cursor.fetchone()
+        username, scan_pay_account, normal_pay_account, balance = str(data[0]), str(data[2]), str(data[3]), str(data[4])
+        return render_template("dashboard.html", username=username, balance=balance, scan_pay_account=scan_pay_account, normal_pay_account=normal_pay_account)
     except Exception as e:
-        username = e
-    return render_template("dashboard.html", name="sanjiv", data = cookies, username=username)
+        return str(e)
+        # return redirect("/login")
 
 
 if __name__ == "__main__":
