@@ -48,6 +48,7 @@ try:
         passwd=mysql_password,
         # database=mysql_db
     )
+    connection.autocommit=False
     cursor = connection.cursor()
     try:
         cursor.execute("create database "+mysql_db)
@@ -236,7 +237,9 @@ def dashboard():
     cookies = str(session)
     try:
         token = session["token"]
-        username = str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["username"])
+        username, jwt_exp = str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["username"]), str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["expiration"])
+        # if expiration<datetime.now():
+        #     return redirect("/logout")
         cursor.execute("select * from users where username=\""+username+"\"")
         data = cursor.fetchone()
         username, scan_pay_account, normal_pay_account, balance = str(data[0]), str(data[2]), str(data[3]), str(data[4])
@@ -248,22 +251,81 @@ def dashboard():
 
 @app.route("/view_transactions", methods=["GET"])
 def view_transactions():
-    cookies = str(session)
     try:
         token = session["token"]
-        username = str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["username"])
+        username, jwt_exp = str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["username"]), str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["expiration"])
+        # if expiration<datetime.now():
+        #     return redirect("/logout")
         cursor.execute("select scan_pay_account from users where username=\""+username+"\"")
         scan_pay_account_number = cursor.fetchone()[0]
         cursor.execute("select normal_pay_account from users where username=\""+username+"\"")
         normal_pay_account_number = cursor.fetchone()[0]
-        cursor.execute("select * from scan_pay_transactions where _from=\""+scan_pay_account_number+"\""+" or _to=\""+scan_pay_account_number+"\"")
+        cursor.execute("select * from scan_pay_transactions where _from=\""+scan_pay_account_number+"\""+" or _to=\""+scan_pay_account_number+"\" ORDER BY date DESC")
         scan_pay_transactions = cursor.fetchall()
-        cursor.execute("select * from normal_pay_transactions where _from=\""+normal_pay_account_number+"\""+" or _to=\""+normal_pay_account_number+"\"")
+        cursor.execute("select * from normal_pay_transactions where _from=\""+normal_pay_account_number+"\""+" or _to=\""+normal_pay_account_number+"\" ORDER BY date DESC")
         normal_pay_transactions = cursor.fetchall()
         return render_template("view_transactions.html", scan_pay_transactions=scan_pay_transactions, normal_pay_transactions=normal_pay_transactions)
     except Exception as e:
-        return str(e)
-        # return redirect("/login")
+        return redirect("/login")
+
+
+@app.route("/normal_pay", methods=["GET", "POST"])
+def normal_pay():
+    try:
+        token = session["token"]
+        username, jwt_exp = str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["username"]), str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["expiration"])
+        # if expiration<datetime.now():
+        #     return redirect("/logout")
+        if request.method=="GET":
+            cursor.execute("select balance from users where username=\""+username+"\"")
+            current_balance = cursor.fetchone()[0]
+            return render_template("normal_payment.html", sender_account=username, current_balance=current_balance)
+        if request.method=="POST":
+            try:
+                post_data = {
+                    "receiver": request.form["receiver"],
+                    "amount": int(request.form["amount"])
+                }
+                cursor.execute("select normal_pay_account from users")
+                all_account_numbers = [item for sublist in cursor.fetchall() for item in sublist]
+                if post_data["receiver"] not in all_account_numbers:
+                    return render_template("transaction_result.html", failure="ERROR: Receiver Not Found")
+                cursor.execute("select username from users where normal_pay_account=\""+post_data["receiver"]+"\"")
+                receiver_name = cursor.fetchone()[0]
+                cursor.execute("select balance from users where username=\""+username+"\"")
+                current_balance = cursor.fetchone()[0]
+                if post_data["amount"]<=current_balance:
+                    # cursor.execute("SET AUTOCOMMIT=0")
+                    connection.autocommit=False
+                    try:
+                        # connection.start_transaction()
+                        # actual transaction
+                        cursor.execute("select balance from users where normal_pay_account=\""+post_data["receiver"]+"\"")
+                        current_balance2 = cursor.fetchone()[0]
+                        cursor.execute("update users set balance={} where normal_pay_account=\"{}\"".format(current_balance2+post_data["amount"], post_data["receiver"]))
+                        cursor.execute("update users set balance={} where username=\"{}\"".format(current_balance-post_data["amount"], username))
+                        cursor.execute("select count(*) from normal_pay_transactions")
+                        transaction_number = 1+int(cursor.fetchone()[0])
+                        cursor.execute("select normal_pay_account from users where username=\""+username+"\"")
+                        sender_account = cursor.fetchone()[0]
+                        cursor.execute("insert into normal_pay_transactions values({}, \"{}\", \"{}\", \"{}\", {})".format(transaction_number, str(datetime.now()), sender_account, post_data["receiver"], post_data["amount"]))
+                        connection.commit()
+                        return render_template("transaction_result.html", amount=post_data["amount"], success=receiver_name, script='''
+                        setTimeout(function() {
+                            window.location.href = "/dashboard";
+                        }, 2000);
+                        ''')
+                    except Exception as e:
+                        connection.rollback()
+                        return render_template("transaction_result.html", failure="ERROR: rollback done"+str(e))
+                    cursor.execute("SET AUTOCOMMIT=1")
+                else:
+                    return render_template("transaction_result.html", failure="Insufficient Balance")
+            except Exception as e:
+                return render_template("transaction_result.html", failure=str(e))
+    except:
+        return redirect("/login")
+
 
 
 if __name__ == "__main__":
