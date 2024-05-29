@@ -6,16 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <script>
-        function view_transactions(){
-            window.open("/view_transactions", _target="_self");
+        function view_transactions() {
+            window.open("/view_transactions", "_self");
         }
-        function scan_pay(){
-            window.open("/scan_pay", _target="_self");
+        function scan_pay() {
+            window.open("/scan_pay", "_self");
         }
-        function normal_pay(){
-            window.open("/normal_pay", _target="_self");
+        function normal_pay() {
+            window.open("/normal_pay", "_self");
         }
-        
+        function logout() {
+            window.open("/logout", "_self");
+        }
     </script>
     <style>
         body {
@@ -32,6 +34,7 @@
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
         h1 {
@@ -105,12 +108,38 @@
         .payment-options button:hover {
             background-color: #0056b3;
         }
+
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .logout-button button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .logout-button button:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <h1>Welcome to the Dashboard</h1>
+
+        <!-- Logout Button -->
+        <div class="logout-button">
+            <button onclick="logout()">Logout</button>
+        </div>
 
         <!-- User Information Card -->
         <div class="card">

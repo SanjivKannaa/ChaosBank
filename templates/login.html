@@ -50,13 +50,20 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            margin-bottom: 10px;
         }
 
         .login-container input[type="submit"]:hover {
             background-color: #0056b3;
         }
 
-        .error_message{
+        .login-container .register-button {
+            padding: 10px;
+            color: grey;
+            font-size: 16px;
+        }
+
+        .error_message {
             color: red;
         }
     </style>
@@ -71,6 +78,7 @@
             <p class="error_message">{{ error }}</p>
             <input type="submit" value="Login">
         </form>
+        <a class="register-button" href="/register">Click here if you are new</a>
     </div>
 </body>
 
