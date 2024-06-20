@@ -25,7 +25,7 @@ def verify_password(password, hashed_password):
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'u39u5gh3#RF#*35f#F*#%n3u3f3n59u35f#F#G3'
+app.config['SECRET_KEY'] = os.getenv("JWT_SECRET")
 
 
 
@@ -56,11 +56,10 @@ try:
         print("DB already exists")
     try:
         cursor.execute("use "+mysql_db)
-        cursor.execute("create table if not exists users (username varchar(20) primary key, password varchar(60) not null, scan_pay_account char(10), normal_pay_account char(10), balance int)")
-        cursor.execute("create table if not exists scan_pay_transactions (transaction_number int primary key, date datetime not null, _from char(20) not null, _to char(20) not null, amount int not null)")
-        cursor.execute("create table if not exists normal_pay_transactions (transaction_number int primary key, date datetime not null, _from char(20) not null, _to char(20) not null, amount int not null)")
+        cursor.execute("create table if not exists users (username varchar(20) unique not null, password varchar(60) not null, account_number char(10) primary key not null, balance int not null)")
+        cursor.execute("create table if not exists transactions (transaction_number int primary key not null, date datetime not null, _from char(20) not null, _to char(20) not null, amount int not null, FOREIGN KEY (_from) REFERENCES users(account_number),FOREIGN KEY (_to) REFERENCES users(account_number))")
         try:
-            cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\")".format("dummy_user", "dummy_password", "0000000001", "0000000001", 0))
+            cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\")".format("dummy_user", "dummy_password", "0000000001", 0))
         except:
             print("dummy user already exists")
     except Exception as e:
@@ -93,40 +92,109 @@ def token_required(func):
 
 @app.get('/')
 def home():
-    return render_template("home.html")
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == "GET":
-        if not session.get('token'):
-            return render_template("login.html")
-        else:
-            return redirect("/dashboard")
-    login_creds = {
-        "username": request.form['username'],
-        "password": request.form['password']
+    return {
+        "message": "ReliaBank API is working",
+        "for documentation": "visit /docs"
     }
+
+@app.route('/docs', methods=["GET"])
+def docs():
+    return {
+        "/": {
+            "info": "health check endpoint",
+            "request type": "GET"
+        },
+        "/docs": {
+            "info": "view this documentation",
+            "request type": "GET"
+        },
+        "/register": {
+            "info": "register as a new user",
+            "request type": "POST",
+            "payload": {
+                "username": "your_username",
+                "password": "your_password",
+                "balance": "your_initial_balance"
+            }
+        },
+        "/login": {
+            "info": "login as an existing user",
+            "request type": "POST",
+            "payload": {
+                "username": "your_username",
+                "password": "your_password"
+            }
+        },
+        "/logout": {
+            "info": "logout",
+            "request type": "GET"
+        },
+        "/dashboard": {
+            "info": "get stats for your account",
+            "request type": "GET"
+        },
+        "/view_transactions": {
+            "info": "view all transaction of the current user",
+            "request type": "GET"
+        },
+        "/transfer": {
+            "info": "transfer money to another account",
+            "request type": "POST",
+            "payload": {
+                "receiver": "receiver account number",
+                "amount": "amount"
+            }
+        }
+    }
+
+@app.route('/login', methods=['POST'])
+def login():
+    try:
+        req_body = request.json
+        login_creds = {
+            "username": req_body['username'],
+            "password": req_body['password']
+        }
+    except:
+        return {
+            "message": "login failed",
+            "error": "not all required parameters are passed",
+            "code": "0"
+        }
     try:
         cursor.execute("select password from users where username=\""+login_creds["username"]+"\"")
         login_creds["hashed_password"] = cursor.fetchall()[0][0]
     except:
-        return render_template('login.html', error="User Not Found")
+        return {
+            "message": "login failed",
+            "error": "User Not Found",
+            "code": "0"
+        }
     # return login_creds
     if login_creds["username"]:
         if verify_password(login_creds["password"], login_creds["hashed_password"]): #hash_password(request.form['password']) == login_creds["hashed_password"]:
             token = jwt.encode({
-                'username': request.form['username'],
+                'username': login_creds['username'],
                 'expiration': str(datetime.utcnow() + timedelta(minutes=10))
             },app.config['SECRET_KEY'])
             session["token"] = token
-            res = make_response(redirect("/dashboard"), 200)
-            # res.set_cookie('token', token, httponly=True, samesite='Strict')
-            return res
+            return {
+                "message": "login success",
+                "error": "",
+                "code": "1"
+            }
         else:
-            return render_template("login.html", error="Wrong Password")
+            return {
+                "message": "login failed",
+                "error": "Wrong Password",
+                "code": "0"
+            }
     else:
-        return render_template('login.html', error="User Not Found")
+        return {
+            "message": "login failed",
+            "error": "User Not Found",
+            "code": "0"
+        }
 
 
 @app.route('/logout', methods=['GET'])
@@ -135,100 +203,76 @@ def logout():
         session.pop('token')
     except:
         pass
-    return redirect("/dashboard")
-
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == "GET":
-        if not session.get('token'):
-            return render_template("register.html")
-        else:
-            return redirect("/dashboard")
-    login_creds = {
-        "username": request.form['username'],
-        "password": request.form['password'],
-        "password2": request.form['password2'],
-        "account_type": request.form["account_type"],
-        "balance": 0
+    return {
+        "message": "logout success",
+        "error": "",
+        "code": "1"
     }
-    if request.form["initial_balance"] != "":
-        login_creds["balance"] = int(request.form["initial_balance"])
-    if login_creds["password"]!=login_creds["password2"]:
-        return render_template("register.html", error='Password mismatch')
+
+
+@app.route('/register', methods=['POST'])
+def register():
+    try:
+        req_body = request.json
+        login_creds = {
+            "username": req_body['username'],
+            "password": req_body['password'],
+            "balance": 0
+        }
+    except:
+        return {
+            "message": "registration failed",
+            "error": "all required parameters arent passed",
+            "code": "0"
+        }
+    try:
+        login_creds["balance"] = int(req_body["balance"])
+    except:
+        return {
+            "message": "registration failed",
+            "error": "\"balance\" needs to be an integer",
+            "code": "0"
+        }
+    login_creds["password"] = hash_password(login_creds["password"])
+    cursor.execute("select max(account_number) from users where account_number <> \"None\"")
+    account_number = cursor.fetchall()
+    if account_number==[[]]:
+        account_number = "00000001"
     else:
-        login_creds["password"] = hash_password(login_creds["password"])
-        cursor.execute("select max(scan_pay_account) from users where scan_pay_account <> \"None\"")
-        prev_max_scan_pay = cursor.fetchall()
-        cursor.execute("select max(normal_pay_account) from users where normal_pay_account <> \"None\"")
-        prev_max_normal_pay = cursor.fetchall()
-        if prev_max_scan_pay==[[]]:
-            prev_max_scan_pay = "00000001"
+        account_number = str(int(account_number[0][0]) + 1)
+        account_number = "0"*(10-len(account_number)) + account_number
+    try:
+        cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\")".format(login_creds["username"], login_creds["password"], account_number, login_creds["balance"]))
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_DUP_ENTRY:
+            return {
+                "message": "registration failed",
+                "error": "username already used",
+                "code": "0"
+            }
+        elif err.errno == errorcode.ER_DATA_TOO_LONG:
+            return {
+                "message": "registration failed",
+                "error": "data too long",
+                "code": "0"
+            }
         else:
-            prev_max_scan_pay = str(int(prev_max_scan_pay[0][0]) + 1)
-            prev_max_scan_pay = "0"*(10-len(prev_max_scan_pay)) + prev_max_scan_pay
-        if prev_max_normal_pay==[[]]:
-            prev_max_normal_pay = "00000001"
-        else:
-            prev_max_normal_pay = str(int(prev_max_normal_pay[0][0]) + 1)
-            prev_max_normal_pay = "0"*(10-len(prev_max_normal_pay)) + prev_max_normal_pay
-        if login_creds["account_type"] == "scan_pay":
-            try:
-                cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\")".format(login_creds["username"], login_creds["password"], prev_max_scan_pay, None, login_creds["balance"]))
-            except mysql.connector.Error as err:
-                if err.errno == errorcode.ER_DUP_ENTRY:
-                    return render_template("register.html", error="Username already exists")
-                elif err.errno == errorcode.ER_DATA_TOO_LONG:
-                    return render_template("register.html", error="Too long")
-                else:
-                    return render_template("register.html", error=str(err))
-            connection.commit()
-            token = jwt.encode({
-                'username': login_creds['username'],
-                'expiration': str(datetime.utcnow() + timedelta(minutes=10))
-            },app.config['SECRET_KEY'])
-            session["token"] = token
-            res = make_response(redirect("/dashboard"), 200)
-            # res.set_cookie('token', token, httponly=True, samesite='Strict')
-            return res
-        elif login_creds["account_type"] == "normal_pay":
-            try:
-                cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\")".format(login_creds["username"], login_creds["password"], None, prev_max_normal_pay, login_creds["balance"]))
-            except mysql.connector.Error as err:
-                if err.errno == errorcode.ER_DUP_ENTRY:
-                    return render_template("register.html", error="Username already exists")
-                elif err.errno == errorcode.ER_DATA_TOO_LONG:
-                    return render_template("register.html", error="Too long")
-                else:
-                    return render_template("register.html", error=str(err))
-            connection.commit()
-            token = jwt.encode({
-                'username': login_creds['username'],
-                'expiration': str(datetime.utcnow() + timedelta(minutes=10))
-            },app.config['SECRET_KEY'])
-            session["token"] = token
-            res = make_response(redirect("/dashboard"), 200)
-            # res.set_cookie('token', token, httponly=True, samesite='Strict')
-            return res
-        elif login_creds["account_type"] == "both":
-            try:
-                cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\", \"{}\")".format(login_creds["username"], login_creds["password"], prev_max_scan_pay, prev_max_normal_pay, login_creds["balance"]))
-            except mysql.connector.Error as err:
-                if err.errno == errorcode.ER_DUP_ENTRY:
-                    return render_template("register.html", error="Username already exists")
-                elif err.errno == errorcode.ER_DATA_TOO_LONG:
-                    return render_template("register.html", error="Too long")
-                else:
-                    return render_template("register.html", error=str(err))
-            connection.commit()
-            token = jwt.encode({
-                'username': login_creds['username'],
-                'expiration': str(datetime.utcnow() + timedelta(minutes=10))
-            },app.config['SECRET_KEY'])
-            session["token"] = token
-            res = make_response(redirect("/dashboard"), 200)
-            # res.set_cookie('token', token, httponly=True, samesite='Strict')
-            return res
+            return {
+                "message": "registration failed",
+                "error": str(e),
+                "code": "0"
+            }
+    connection.commit()
+    token = jwt.encode({
+        'username': login_creds['username'],
+        'expiration': str(datetime.utcnow() + timedelta(minutes=10))
+    },app.config['SECRET_KEY'])
+    session["token"] = token
+    return {
+        "message": "registration success",
+        "error": "",
+        "code": "1"
+    }
 
 
 @app.get("/dashboard")
@@ -242,11 +286,23 @@ def dashboard():
         #     return redirect("/logout")
         cursor.execute("select * from users where username=\""+username+"\"")
         data = cursor.fetchone()
-        username, scan_pay_account, normal_pay_account, balance = str(data[0]), str(data[2]), str(data[3]), str(data[4])
-        return render_template("dashboard.html", username=username, balance=balance, scan_pay_account=scan_pay_account, normal_pay_account=normal_pay_account)
+        username, account_number, balance = str(data[0]), str(data[2]), str(data[3])
+        return {
+            "message": "success",
+            "error": "",
+            "username": username,
+            "balance": balance,
+            "account_number": account_number,
+            "code": "1"
+        }
     except Exception as e:
         # return str(e)
-        return redirect("/login")
+        return {
+            "message": "failed",
+            "error": "not authenticated",
+            "more info": str(e),
+            "code": "0"
+        }
 
 
 @app.route("/view_transactions", methods=["GET"])
@@ -256,75 +312,110 @@ def view_transactions():
         username, jwt_exp = str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["username"]), str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["expiration"])
         # if expiration<datetime.now():
         #     return redirect("/logout")
-        cursor.execute("select scan_pay_account from users where username=\""+username+"\"")
-        scan_pay_account_number = cursor.fetchone()[0]
-        cursor.execute("select normal_pay_account from users where username=\""+username+"\"")
-        normal_pay_account_number = cursor.fetchone()[0]
-        cursor.execute("select * from scan_pay_transactions where _from=\""+scan_pay_account_number+"\""+" or _to=\""+scan_pay_account_number+"\" ORDER BY date DESC")
-        scan_pay_transactions = cursor.fetchall()
-        cursor.execute("select * from normal_pay_transactions where _from=\""+normal_pay_account_number+"\""+" or _to=\""+normal_pay_account_number+"\" ORDER BY date DESC")
-        normal_pay_transactions = cursor.fetchall()
-        return render_template("view_transactions.html", scan_pay_transactions=scan_pay_transactions, normal_pay_transactions=normal_pay_transactions)
+        cursor.execute("select account_number from users where username=\""+username+"\"")
+        account_number = cursor.fetchone()[0]
+        cursor.execute("select * from transactions where _from=\""+account_number+"\""+" or _to=\""+account_number+"\" ORDER BY date DESC")
+        transactions = cursor.fetchall()
+        return {
+            "message": "success",
+            "error": "",
+            "transactions": transactions,
+            "code": "1"
+        }
     except Exception as e:
-        return redirect("/login")
+        return {
+            "message": "failed",
+            "error": "not authenticated",
+            "code": "0"
+        }
 
 
-@app.route("/normal_pay", methods=["GET", "POST"])
-def normal_pay():
+@app.route("/transfer", methods=["POST"])
+def transfer():
     try:
         token = session["token"]
         username, jwt_exp = str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["username"]), str(dict(jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256']))["expiration"])
         # if expiration<datetime.now():
         #     return redirect("/logout")
-        if request.method=="GET":
+        try:
+            req_body = request.json
+            post_data = {
+                "receiver": req_body["receiver"],
+                "amount": int(req_body["amount"])
+            }
+            if post_data["amount"]<=0:
+                return {
+                    "message": "transaction failed",
+                    "error": "amount needs to be > 0",
+                    "code": "0"
+                }
+            cursor.execute("select account_number from users")
+            all_account_numbers = [item for sublist in cursor.fetchall() for item in sublist]
+            if post_data["receiver"] not in all_account_numbers:
+                return {
+                    "message": "transaction failed",
+                    "error": "Receiver account not found",
+                    "code": "0"
+                }
+            cursor.execute("select username from users where account_number=\""+post_data["receiver"]+"\"")
+            receiver_name = cursor.fetchone()[0]
+            cursor.execute("select account_number from users where username=\""+username+"\"")
+            user_account_number = cursor.fetchone()[0]
+            if post_data["receiver"] == user_account_number:
+                return {
+                    "message": "transaction failed",
+                    "error": "you cannot send money to yourself",
+                    "code": "0"
+                }
             cursor.execute("select balance from users where username=\""+username+"\"")
             current_balance = cursor.fetchone()[0]
-            return render_template("normal_payment.html", sender_account=username, current_balance=current_balance)
-        if request.method=="POST":
-            try:
-                post_data = {
-                    "receiver": request.form["receiver"],
-                    "amount": int(request.form["amount"])
+            if post_data["amount"]<=current_balance:
+                # cursor.execute("SET AUTOCOMMIT=0")
+                connection.autocommit=False
+                try:
+                    # connection.start_transaction()
+                    # actual transaction
+                    cursor.execute("select balance from users where account_number=\""+post_data["receiver"]+"\"")
+                    current_balance2 = cursor.fetchone()[0]
+                    cursor.execute("update users set balance={} where account_number=\"{}\"".format(current_balance2+post_data["amount"], post_data["receiver"]))
+                    cursor.execute("update users set balance={} where username=\"{}\"".format(current_balance-post_data["amount"], username))
+                    cursor.execute("select count(*) from transactions")
+                    transaction_number = 1+int(cursor.fetchone()[0])
+                    cursor.execute("select account_number from users where username=\""+username+"\"")
+                    sender_account = cursor.fetchone()[0]
+                    cursor.execute("insert into transactions values({}, \"{}\", \"{}\", \"{}\", {})".format(transaction_number, str(datetime.now()), sender_account, post_data["receiver"], post_data["amount"]))
+                    connection.commit()
+                    return {
+                        "message": "transaction success: ${} sent to {}".format(post_data["amount"], receiver_name),
+                        "error": "",
+                        "code": "1"
+                    }
+                except Exception as e:
+                    connection.rollback()
+                    return {
+                        "message": "transaction failed",
+                        "error": str(e),
+                        "code": "0"
+                    }
+                cursor.execute("SET AUTOCOMMIT=1")
+            else:
+                return {
+                    "message": "transaction failed",
+                    "error": "insufficied balance",
+                    "code": "0"
                 }
-                cursor.execute("select normal_pay_account from users")
-                all_account_numbers = [item for sublist in cursor.fetchall() for item in sublist]
-                if post_data["receiver"] not in all_account_numbers:
-                    return render_template("transaction_result.html", failure="ERROR: Receiver Not Found")
-                cursor.execute("select username from users where normal_pay_account=\""+post_data["receiver"]+"\"")
-                receiver_name = cursor.fetchone()[0]
-                cursor.execute("select balance from users where username=\""+username+"\"")
-                current_balance = cursor.fetchone()[0]
-                if post_data["amount"]<=current_balance:
-                    # cursor.execute("SET AUTOCOMMIT=0")
-                    connection.autocommit=False
-                    try:
-                        # connection.start_transaction()
-                        # actual transaction
-                        cursor.execute("select balance from users where normal_pay_account=\""+post_data["receiver"]+"\"")
-                        current_balance2 = cursor.fetchone()[0]
-                        cursor.execute("update users set balance={} where normal_pay_account=\"{}\"".format(current_balance2+post_data["amount"], post_data["receiver"]))
-                        cursor.execute("update users set balance={} where username=\"{}\"".format(current_balance-post_data["amount"], username))
-                        cursor.execute("select count(*) from normal_pay_transactions")
-                        transaction_number = 1+int(cursor.fetchone()[0])
-                        cursor.execute("select normal_pay_account from users where username=\""+username+"\"")
-                        sender_account = cursor.fetchone()[0]
-                        cursor.execute("insert into normal_pay_transactions values({}, \"{}\", \"{}\", \"{}\", {})".format(transaction_number, str(datetime.now()), sender_account, post_data["receiver"], post_data["amount"]))
-                        connection.commit()
-                        return render_template("transaction_result.html", amount=post_data["amount"], success=receiver_name, script='''
-                        setTimeout(function() {
-                            window.location.href = "/dashboard";
-                        }, 2000);
-                        ''')
-                    except Exception as e:
-                        connection.rollback()
-                        return render_template("transaction_result.html", failure="ERROR: rollback done"+str(e))
-                    cursor.execute("SET AUTOCOMMIT=1")
-                else:
-                    return render_template("transaction_result.html", failure="Insufficient Balance")
-            except Exception as e:
-                return render_template("transaction_result.html", failure=str(e))
+        except Exception as e:
+            return {
+                "message": "transaction failed",
+                "error": str(e),
+                "code": "0"
+            }
     except:
-        return redirect("/login")
+        return {
+            "message": "transaction failed",
+            "error": "not authenticated",
+            "code": "0"
+        }
 
 
 
