@@ -1,2 +1,4 @@
 .env
 serverinit.sh
+.terraform*
+terraform.tfs*

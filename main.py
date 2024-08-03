@@ -1,10 +1,4 @@
 import os
-# os.system("pip3 install flask")
-# os.system("pip3 install pyjwt")
-# os.system("pip3 install pymongo")
-# os.system("pip3 install mysql-connector-python")
-# os.system("pip3 install python-dotenv")
-# os.system("pip3 install bcrypt")
 from flask import Flask, request, jsonify, make_response, request, render_template, session, flash, redirect
 import jwt
 from pymongo import MongoClient
@@ -59,7 +53,7 @@ try:
         cursor.execute("create table if not exists users (username varchar(20) unique not null, password varchar(60) not null, account_number char(10) primary key not null, balance int not null)")
         cursor.execute("create table if not exists transactions (transaction_number int primary key not null, date datetime not null, _from char(20) not null, _to char(20) not null, amount int not null, FOREIGN KEY (_from) REFERENCES users(account_number),FOREIGN KEY (_to) REFERENCES users(account_number))")
         try:
-            cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\")".format("dummy_user", "dummy_password", "0000000001", 0))
+            cursor.execute("insert into users values (\"{}\", \"{}\", \"{}\", \"{}\")".format("dummy_user", os.getenv("dummy_user_pass"), "0000000001", 0))
         except:
             print("dummy user already exists")
     except Exception as e:
