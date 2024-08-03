@@ -11,6 +11,8 @@
         - docker.io
         - docker-compose
         - nginx
+        - certbot
+        - python3-certbot-dns-cloudflare
     
     - name: Clone repository
       git:
@@ -22,6 +24,19 @@
         remote_src: yes
         src: /home/admin/reliabank/.env.example
         dest: /home/admin/reliabank/.env
+
+    - name: Copy certbot credentials
+      copy:
+        src: cloudflare.ini
+        dest: /cloudflare.ini
+        owner: admin
+        group: admin
+        mode: '400'
+
+    - name: Obtain SSL/TLS Certificate with Certbot
+      command: certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d chaosbank1.magickite.tech
+      register: certbot_result
+      tags: obtain
 
     - name: Run docker-compose
       command: docker-compose --env-file=.env.example up -d
@@ -60,6 +75,8 @@
         - docker.io
         - docker-compose
         - nginx
+        - certbot
+        - python3-certbot-dns-cloudflare
     
     - name: Clone repository
       git:
@@ -71,6 +88,19 @@
         remote_src: yes
         src: /home/admin/reliabank/.env.example
         dest: /home/admin/reliabank/.env
+
+    - name: Copy certbot credentials
+      copy:
+        src: cloudflare.ini
+        dest: /cloudflare.ini
+        owner: admin
+        group: admin
+        mode: '400'
+
+    - name: Obtain SSL/TLS Certificate with Certbot
+      command: certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d chaosbank2.magickite.tech
+      register: certbot_result
+      tags: obtain
 
     - name: Run docker-compose
       command: docker-compose --env-file=.env.example up -d
