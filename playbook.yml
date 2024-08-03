@@ -17,6 +17,12 @@
         repo: 'https://github.com/sanjivkannaa/reliabank.git'
         dest: /home/admin/reliabank
 
+    - name: Set env
+      copy:
+        remote_src: yes
+        src: /home/admin/reliabank/.env.example
+        dest: /home/admin/reliabank/.env
+
     - name: Run docker-compose
       command: docker-compose --env-file=.env.example up -d
       args:
@@ -59,6 +65,12 @@
       git:
         repo: 'https://github.com/sanjivkannaa/reliabank.git'
         dest: /home/admin/reliabank
+
+    - name: Set env
+      copy:
+        remote_src: yes
+        src: /home/admin/reliabank/.env.example
+        dest: /home/admin/reliabank/.env
 
     - name: Run docker-compose
       command: docker-compose --env-file=.env.example up -d
