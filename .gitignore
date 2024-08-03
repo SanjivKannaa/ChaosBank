@@ -2,3 +2,4 @@
 serverinit.sh
 .terraform*
 terraform.tfs*
+*.pem

@@ -1,0 +1,87 @@
+# api 1
+- hosts: reliabank1
+  become: yes
+  tasks:
+    - name: Update and install tools
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - git
+        - docker.io
+        - docker-compose
+        - nginx
+    
+    - name: Clone repository
+      git:
+        repo: 'https://github.com/sanjivkannaa/reliabank.git'
+        dest: /home/admin/reliabank
+
+    - name: Run docker-compose
+      command: docker-compose --env-file=.env.example up -d
+      args:
+        chdir: /home/admin/reliabank
+
+    - name: Copy Nginx configuration file
+      template:
+        src: nginx_conf/nginx1.conf
+        dest: /etc/nginx/conf.d/chaosbank1.magickite.tech.conf
+      notify:
+        - Restart Nginx
+
+    - name: Ensure Nginx is running
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+
+# api 2
+- hosts: reliabank2
+  become: yes
+  tasks:
+    - name: Update and install tools
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - git
+        - docker.io
+        - docker-compose
+        - nginx
+    
+    - name: Clone repository
+      git:
+        repo: 'https://github.com/sanjivkannaa/reliabank.git'
+        dest: /home/admin/reliabank
+
+    - name: Run docker-compose
+      command: docker-compose --env-file=.env.example up -d
+      args:
+        chdir: /home/admin/reliabank
+
+    - name: Copy Nginx configuration file
+      template:
+        src: nginx_conf/nginx2.conf
+        dest: /etc/nginx/conf.d/chaosbank2.magickite.tech.conf
+      notify:
+        - Restart Nginx
+
+    - name: Ensure Nginx is running
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+
+# load balancer
