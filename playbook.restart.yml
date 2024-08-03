@@ -1,0 +1,81 @@
+- hosts: reliabank1
+  become: yes
+  tasks:
+    - name: Change directory and bring down Docker Compose services
+      shell: |
+        cd /home/admin/reliabank
+        docker-compose --env-file=.env.example down
+      args:
+        chdir: /home/admin/reliabank
+
+    - name: Prune all Docker system resources
+      command: docker system prune --all -f
+
+    - name: Remove the repository directory
+      file:
+        path: /home/admin/reliabank
+        state: absent
+
+    - name: Clone repository
+      git:
+        repo: 'https://github.com/sanjivkannaa/reliabank.git'
+        dest: /home/admin/reliabank
+
+    - name: Set env
+      copy:
+        remote_src: yes
+        src: /home/admin/reliabank/.env.example
+        dest: /home/admin/reliabank/.env
+
+    - name: Run docker-compose
+      command: docker-compose --env-file=.env.example up -d
+      args:
+        chdir: /home/admin/reliabank
+
+    - name: Copy Nginx configuration file
+      template:
+        src: nginx_conf/nginx1.conf
+        dest: /etc/nginx/conf.d/chaosbank1.magickite.tech.conf
+      notify:
+        - Restart Nginx
+
+- hosts: reliabank2
+  become: yes
+  tasks:
+    - name: Change directory and bring down Docker Compose services
+      shell: |
+        cd /home/admin/reliabank
+        docker-compose --env-file=.env.example down
+      args:
+        chdir: /home/admin/reliabank
+
+    - name: Prune all Docker system resources
+      command: docker system prune --all -f
+
+    - name: Remove the repository directory
+      file:
+        path: /home/admin/reliabank
+        state: absent
+
+    - name: Clone repository
+      git:
+        repo: 'https://github.com/sanjivkannaa/reliabank.git'
+        dest: /home/admin/reliabank
+
+    - name: Set env
+      copy:
+        remote_src: yes
+        src: /home/admin/reliabank/.env.example
+        dest: /home/admin/reliabank/.env
+
+    - name: Run docker-compose
+      command: docker-compose --env-file=.env.example up -d
+      args:
+        chdir: /home/admin/reliabank
+
+    - name: Copy Nginx configuration file
+      template:
+        src: nginx_conf/nginx1.conf
+        dest: /etc/nginx/conf.d/chaosbank1.magickite.tech.conf
+      notify:
+        - Restart Nginx

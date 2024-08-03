@@ -3,3 +3,4 @@ serverinit.sh
 .terraform*
 terraform.tfs*
 *.pem
+cloudflare.ini
