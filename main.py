@@ -23,15 +23,15 @@ app.config['SECRET_KEY'] = os.getenv("JWT_SECRET")
 
 
 
-try:
-    MONGO_URI = os.getenv("MONGODB_URI")
-    client = MongoClient(MONGO_URI)
-    client.admin.command('ping')
-    print("Connection to Mongo DB successful")
-except:
-    print("ERROR CONNECTING TO MONGODB")
-    time.sleep(5)
-    exit()
+# try:
+#     MONGO_URI = os.getenv("MONGODB_URI")
+#     client = MongoClient(MONGO_URI)
+#     client.admin.command('ping')
+#     print("Connection to Mongo DB successful")
+# except:
+#     print("ERROR CONNECTING TO MONGODB")
+#     time.sleep(5)
+#     exit()
 
 try:
     mysql_password = os.getenv("MYSQL_ROOT_PASSWORD")

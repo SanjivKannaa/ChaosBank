@@ -11,20 +11,20 @@ services:
     ports:
       - "${port}:5000"
     depends_on:
-      - mongodb
+      # - mongodb
       - mysql
     networks:
       - reliabank-network
     command: ["python3", "main.py"]
-  mongodb:
-    container_name: reliabank-mongodb
-    image: mongo
-    expose: 
-      - 27017
-    volumes:
-      - mongodbdata:/data/db
-    networks:
-      - reliabank-network
+  # mongodb:
+  #   container_name: reliabank-mongodb
+  #   image: mongo
+  #   expose: 
+  #     - 27017
+  #   volumes:
+  #     - mongodbdata:/data/db
+  #   networks:
+  #     - reliabank-network
   mysql:
     container_name: reliabank-mysql
     image: mysql
