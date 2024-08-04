@@ -127,3 +127,44 @@
         state: restarted
 
 # load balancer
+# api 1
+- hosts: reliabank_lb
+  become: yes
+  tasks:
+    - name: Update and install tools
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - git
+        - docker.io
+        - docker-compose
+        - nginx
+        - certbot
+        - python3-certbot-dns-cloudflare
+    
+    - name: Copy certbot credentials
+      copy:
+        src: cloudflare.ini
+        dest: /cloudflare.ini
+        owner: admin
+        group: admin
+        mode: '400'
+
+    - name: Obtain SSL/TLS Certificate with Certbot
+      command: certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d chaosbank1.magickite.tech
+      register: certbot_result
+      tags: obtain
+
+    - name: Copy Nginx configuration file
+      template:
+        src: nginx_conf/load_balancer.conf
+        dest: /etc/nginx/conf.d/chaosbank.magickite.tech.conf
+      notify:
+        - Restart Nginx
+
+    - name: Ensure Nginx is running
+      service:
+        name: nginx
+        state: started
+        enabled: yes

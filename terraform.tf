@@ -19,6 +19,25 @@ resource "aws_key_pair" "aws-test" {
 }
 
 
+// Create a EC2 (loadbalancer+backup)
+resource "aws_instance" "chaosbank_load_balancer" {
+  ami              = "ami-0212a8e7fb09718ec"
+  instance_type    = "t3.small"
+  vpc_security_group_ids  = ["sg-0c8d056e2c42f3a23"]
+  key_name         = aws_key_pair.aws-test.key_name
+  tags = {
+    Name = "chaosbank_load_balancer"
+  }
+}
+
+// allocating the elestic ip (hardcoded) to the new ec2 instance 0
+resource "aws_eip_association" "eip_assoc0" {
+  instance_id = aws_instance.chaosbank_load_balancer.id
+  allocation_id = "eipalloc-02ae67e855f07f85d"
+}
+
+
+
 
 
 // Create a EC2 (1)
