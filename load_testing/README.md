@@ -7,8 +7,9 @@ $ snap install k6
 ```
 
 ## How To Run
+```
 k6 run load-test.js
+```
 
 ## Contributors
 Sanjiv Kannaa J <br>
-Sri Vignesh <br>
