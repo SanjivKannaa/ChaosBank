@@ -1,4 +1,4 @@
-# api 1
+# # api 1
 - hosts: reliabank1
   become: yes
   tasks:
@@ -21,8 +21,8 @@
 
     - name: Set env
       copy:
-        remote_src: yes
-        src: /home/admin/reliabank/.env.example
+        # remote_src: yes
+        src: .env
         dest: /home/admin/reliabank/.env
 
     - name: Copy certbot credentials
@@ -85,8 +85,8 @@
 
     - name: Set env
       copy:
-        remote_src: yes
-        src: /home/admin/reliabank/.env.example
+        # remote_src: yes
+        src: .env
         dest: /home/admin/reliabank/.env
 
     - name: Copy certbot credentials
@@ -127,7 +127,6 @@
         state: restarted
 
 # load balancer
-# api 1
 - hosts: reliabank_lb
   become: yes
   tasks:
@@ -152,7 +151,7 @@
         mode: '400'
 
     - name: Obtain SSL/TLS Certificate with Certbot
-      command: certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d chaosbank1.magickite.tech
+      command: certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d chaosbank.magickite.tech
       register: certbot_result
       tags: obtain
 
@@ -168,3 +167,8 @@
         name: nginx
         state: started
         enabled: yes
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted

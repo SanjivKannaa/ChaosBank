@@ -1,3 +1,6 @@
+# terraform init
+# terraform apply -var mysql_username="your_username" -var mysql_password="your_password"
+
 variable "mysql_username" {
   type = string
   default = "root"
@@ -39,10 +42,11 @@ resource "aws_db_instance" "reliabank-db" {
   instance_class       = "db.t3.micro"
   username             = var.mysql_username
   password             = var.mysql_password
+  availability_zone    = "ap-south-1a"
   parameter_group_name = "default.mysql8.0"
   skip_final_snapshot  = true
 }
-output "update this value in the .env (for MYSQL_ENDPOINT)" {
+output "MYSQL_ENDPOINT" {
   value = aws_db_instance.reliabank-db.endpoint
 }
 
@@ -59,7 +63,9 @@ resource "aws_key_pair" "aws-test" {
 // Create a EC2 (loadbalancer+backup)
 resource "aws_instance" "chaosbank_load_balancer" {
   ami              = "ami-0212a8e7fb09718ec"
+  availability_zone= "ap-south-1a"
   instance_type    = "t3.small"
+  # hostname_type    = "resource-name"
   vpc_security_group_ids  = ["sg-0c8d056e2c42f3a23"]
   key_name         = aws_key_pair.aws-test.key_name
   tags = {
@@ -93,6 +99,7 @@ resource "aws_eip_association" "eip_assoc1" {
 // Create a EC2 (2)
 resource "aws_instance" "chaosbank2" {
   ami              = "ami-0212a8e7fb09718ec"
+  availability_zone= "ap-south-1a"
   instance_type    = "t3.medium"
   vpc_security_group_ids  = ["sg-0c8d056e2c42f3a23"]
   key_name         = aws_key_pair.aws-test.key_name
