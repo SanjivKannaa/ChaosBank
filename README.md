@@ -23,7 +23,7 @@ $ cd reliabank
 $ cp .env.example .env
 ```
 
-setup .env
+setup .env [make sure to set strong username and password]
 
 ```
 $ docker-compose up -d
@@ -40,10 +40,12 @@ Make sure to have terraform and aws-cli installed and setup (aws creds must  be 
 
 ```
 $ terraform init
-$ terraform apply
+$ terraform apply -var mysql_username="your_username" -var mysql_password="your_password"
 ```
 
-2. setup ansible inventory (and do dns mapping)
+2. terraform output will contain the DB endpoint, update it in the .env file
+
+3. setup ansible inventory (and do dns mapping)
 
 ```
 $ ansible-playbook -i inventory.ini playbook.yml
