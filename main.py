@@ -34,11 +34,13 @@ app.config['SECRET_KEY'] = os.getenv("JWT_SECRET")
 #     exit()
 
 try:
+    mysql_endpoint = os.getenv("MYSQL_ENDPOINT")
+    mysql_username = os.getenv("MYSQL_ROOT_USERNAME")
     mysql_password = os.getenv("MYSQL_ROOT_PASSWORD")
     mysql_db = os.getenv("MYSQL_DB")
     connection = mysql.connector.connect(
-        host="mysql",
-        user="root",
+        host=mysql_endpoint,
+        user=mysql_username,
         passwd=mysql_password,
         # database=mysql_db
     )
