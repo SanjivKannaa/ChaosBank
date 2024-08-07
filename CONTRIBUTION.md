@@ -4,5 +4,6 @@
 2. Database using AWS RDS
 3. Load Balancing using EC2 Load balancer
 4. Add system monitoring using Prometheus and Grafana
-5. Log monitoring and SIEM
-6. K8S
+5. Host Static files using AWS S3
+6. Log monitoring and SIEM
+7. K8S
