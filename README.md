@@ -18,8 +18,8 @@ Sanjiv Kannaa J <br>
 ## How To Run (local)
 
 ```
-$ git clone https://github.com/sanjivkannaa/reliabank.git
-$ cd reliabank
+$ git clone https://github.com/sanjivkannaa/chaosbank.git
+$ cd chaosbank
 $ cp .env.example .env
 ```
 
