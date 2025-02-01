@@ -74,14 +74,14 @@ def token_required(func):
     def decorated(*args, **kwargs):
         token = request.args.get('token')
         if not token:
-            return jsonify({'Alert!': 'Token is missing!'}), 401
+            return jsonify({'Alert!': 'Token is missing!'}), 400
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'])
         # You can use the JWT errors in exception
         # except jwt.InvalidTokenError:
         #     return 'Invalid token. Please log in again.'
         except:
-            return jsonify({'Message': 'Invalid token'}), 403
+            return jsonify({'Message': 'Invalid token'}), 400
         return func(*args, **kwargs)
     return decorated
 
@@ -90,6 +90,7 @@ def token_required(func):
 def home():
     return make_response({
         "message": "ReliaBank API is working",
+        "API version": "v1.0",
         "for documentation": "visit /docs"
     }, 200)
 
@@ -154,18 +155,16 @@ def login():
     except:
         return make_response({
             "message": "login failed",
-            "error": "not all required parameters are passed",
-            "code": "0"
-        }, 404)
+            "error": "not all required parameters are passed"
+        }, 400)
     try:
         cursor.execute("select password from users where username=\""+login_creds["username"]+"\"")
         login_creds["hashed_password"] = cursor.fetchall()[0][0]
     except:
         return make_response({
             "message": "login failed",
-            "error": "User Not Found",
-            "code": "0"
-        }, 400)
+            "error": "User Not Found"
+        }, 200)
     # return login_creds
     if login_creds["username"]:
         if verify_password(login_creds["password"], login_creds["hashed_password"]): #hash_password(request.form['password']) == login_creds["hashed_password"]:
@@ -176,21 +175,18 @@ def login():
             session["token"] = token
             return make_response({
                 "message": "login success",
-                "error": "",
-                "code": "1"
+                "error": ""
             }, 200)
         else:
             return make_response({
                 "message": "login failed",
-                "error": "Wrong Password",
-                "code": "0"
-            }, 400)
+                "error": "Wrong Password"
+            }, 200)
     else:
         return make_response({
             "message": "login failed",
-            "error": "User Not Found",
-            "code": "0"
-        }, 400)
+            "error": "User Not Found"
+        }, 200)
 
 
 @app.route('/logout', methods=['GET'])
@@ -201,8 +197,7 @@ def logout():
         pass
     return make_response({
         "message": "logout success",
-        "error": "",
-        "code": "1"
+        "error": ""
     }, 200)
 
 
@@ -218,17 +213,15 @@ def register():
     except:
         return make_response({
             "message": "registration failed",
-            "error": "all required parameters arent passed",
-            "code": "0"
+            "error": "all required parameters arent passed"
         }, 400)
     try:
         login_creds["balance"] = int(req_body["balance"])
     except:
         return make_response({
             "message": "registration failed",
-            "error": "\"balance\" needs to be an integer",
-            "code": "0"
-        }, 400)
+            "error": "\"balance\" needs to be an integer"
+        }, 200)
     login_creds["password"] = hash_password(login_creds["password"])
     cursor.execute("select max(account_number) from users where account_number <> \"None\"")
     account_number = cursor.fetchall()
@@ -243,20 +236,17 @@ def register():
         if err.errno == errorcode.ER_DUP_ENTRY:
             return make_response({
                 "message": "registration failed",
-                "error": "username already used",
-                "code": "0"
-            }, 400)
+                "error": "username already used"
+            }, 200)
         elif err.errno == errorcode.ER_DATA_TOO_LONG:
             return make_response({
                 "message": "registration failed",
-                "error": "data too long",
-                "code": "0"
-            }, 400)
+                "error": "data too long"
+            }, 200)
         else:
             return make_response({
                 "message": "registration failed",
-                "error": str(e),
-                "code": "0"
+                "error": str(e)
             }, 400)
     connection.commit()
     token = jwt.encode({
@@ -266,8 +256,7 @@ def register():
     session["token"] = token
     return make_response({
         "message": "registration success",
-        "error": "",
-        "code": "1"
+        "error": ""
     }, 200)
 
 
@@ -288,16 +277,14 @@ def dashboard():
             "error": "",
             "username": username,
             "balance": balance,
-            "account_number": account_number,
-            "code": "1"
+            "account_number": account_number
         }, 200)
     except Exception as e:
         # return str(e)
         return make_response({
             "message": "failed",
             "error": "not authenticated",
-            "more info": str(e),
-            "code": "0"
+            "more info": str(e)
         }, 401)
 
 
@@ -316,13 +303,11 @@ def view_transactions():
             "message": "success",
             "error": "",
             "transactions": transactions,
-            "code": "1"
         }, 200)
     except Exception as e:
         return make_response({
             "message": "failed",
-            "error": "not authenticated",
-            "code": "0"
+            "error": "not authenticated"
         }, 401)
 
 
@@ -342,16 +327,14 @@ def transfer():
             if post_data["amount"]<=0:
                 return make_response({
                     "message": "transaction failed",
-                    "error": "amount needs to be > 0",
-                    "code": "0"
+                    "error": "amount needs to be > 0"
                 }, 400)
             cursor.execute("select account_number from users")
             all_account_numbers = [item for sublist in cursor.fetchall() for item in sublist]
             if post_data["receiver"] not in all_account_numbers:
                 return make_response({
                     "message": "transaction failed",
-                    "error": "Receiver account not found",
-                    "code": "0"
+                    "error": "Receiver account not found"
                 }, 400)
             cursor.execute("select username from users where account_number=\""+post_data["receiver"]+"\"")
             receiver_name = cursor.fetchone()[0]
@@ -360,8 +343,7 @@ def transfer():
             if post_data["receiver"] == user_account_number:
                 return make_response({
                     "message": "transaction failed",
-                    "error": "you cannot send money to yourself",
-                    "code": "0"
+                    "error": "you cannot send money to yourself"
                 }, 400)
             cursor.execute("select balance from users where username=\""+username+"\"")
             current_balance = cursor.fetchone()[0]
@@ -383,34 +365,29 @@ def transfer():
                     connection.commit()
                     return make_response({
                         "message": "transaction success: ${} sent to {}".format(post_data["amount"], receiver_name),
-                        "error": "",
-                        "code": "1"
+                        "error": ""
                     }, 200)
                 except Exception as e:
                     connection.rollback()
                     return make_response({
                         "message": "transaction failed",
-                        "error": str(e),
-                        "code": "0"
+                        "error": str(e)
                     }, 400)
                 cursor.execute("SET AUTOCOMMIT=1")
             else:
                 return make_response({
                     "message": "transaction failed",
-                    "error": "insufficied balance",
-                    "code": "0"
+                    "error": "insufficied balance"
                 }, 400)
         except Exception as e:
             return make_response({
                 "message": "transaction failed",
-                "error": str(e),
-                "code": "0"
+                "error": str(e)
             }, 400)
     except:
         return make_response({
             "message": "transaction failed",
-            "error": "not authenticated",
-            "code": "0"
+            "error": "not authenticated"
         }, 401)
 
 
