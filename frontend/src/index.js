@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 import Transfer from './pages/Transfer';
 import TransactionHistory from './pages/TransactionHistory';
 import Notfound from './pages/Notfound';
@@ -19,6 +20,7 @@ root.render(
         <Route path="/dashboard" element={<Dashboard />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/register" element={<Register />}></Route>
+        <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
         <Route path="/transfer" element={<Transfer />}></Route>
         <Route path="/transactionHistory" element={<TransactionHistory />}></Route>
         <Route path="*" element={<Notfound />}></Route>
