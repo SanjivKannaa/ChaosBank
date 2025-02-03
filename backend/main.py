@@ -1,5 +1,6 @@
 import os
 from flask import Flask, request, jsonify, make_response, request, render_template, session, flash, redirect
+from flask_cors import CORS
 import jwt
 from pymongo import MongoClient
 import mysql.connector
@@ -20,7 +21,7 @@ def verify_password(password, hashed_password):
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("JWT_SECRET")
-
+CORS(app)
 
 
 # try:

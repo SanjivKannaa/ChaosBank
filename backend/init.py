@@ -1,5 +1,6 @@
 import os
 os.system("pip3 install flask")
+os.system("pip3 install flask-cors")
 os.system("pip3 install pyjwt")
 os.system("pip3 install pymongo")
 os.system("pip3 install mysql-connector-python")
