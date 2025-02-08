@@ -2,8 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
 import axios from 'axios'; 
-import './css/global.css';
-import './css/login.css';
+// import './css/global.css';
+import styles from './css/login.module.css';
 
 function Login() {
   let navigate = useNavigate();
@@ -61,12 +61,12 @@ function Login() {
   };
 
   return (
-    <div className="App">
-      <div className="container">
-        <div className="left-div">
-          <p className="logintext">Login to Your Account</p>
+    <div className={styles.App}>
+      <div className={styles.container}>
+        <div className={styles.leftDiv}>
+          <p className={styles.logintext}>Login to Your Account</p>
         </div>
-        <div className="right-div">
+        <div className={styles.rightDiv}>
           <form onSubmit={handleSubmit}>
             <label>
               ACCOUNT NUMBER:
@@ -90,7 +90,7 @@ function Login() {
             </label>
             <a href="/forgotPassword">Forgot password?</a>
             <br />
-            {error && <label className="error" style={{ color: 'red' }}>{error}</label>}
+            {error && <label className={styles.error} style={{ color: 'red' }}>{error}</label>}
             <br />
             <Button type="submit" variant="contained">LOGIN</Button>
             <br /><br />
