@@ -1,0 +1,18 @@
+.App {
+  height: 10vh;
+  width: 100%;
+  background-color: rgb(200, 200, 200);
+}
+
+.appLogo {
+  height: 100%;
+  width: auto;
+}
+
+@media (max-width: 450px) {
+  .appLogo {
+    width: 80%;
+    height: auto;
+  }
+  
+}

@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import axios from 'axios'; 
 // import './css/global.css';
 import styles from '../css/login.module.css';
+import Header from '../components/Header';
 
 function Login() {
   let navigate = useNavigate();
@@ -61,42 +62,45 @@ function Login() {
   };
 
   return (
-    <div className={styles.App}>
-      <div className={styles.container}>
-        <div className={styles.leftDiv}>
-          <p className={styles.logintext}>Login to Your Account</p>
-        </div>
-        <div className={styles.rightDiv}>
-          <form onSubmit={handleSubmit}>
-            <label>
-              ACCOUNT NUMBER:
-              <input 
-                placeholder='000000001'
-                type="text" 
-                name="userid" 
-                value={formData.userid} 
-                onChange={handleChange} 
-              />
-            </label>
-            <label>
-              PASSWORD:
-              <input 
-                placeholder='P@55wo0d'
-                type="password" 
-                name="password" 
-                value={formData.password} 
-                onChange={handleChange} 
-              />
-            </label>
-            <a href="/forgotPassword">Forgot password?</a>
+    <div>
+      <Header />
+      <div className={styles.App}>
+        <div className={styles.container}>
+          <div className={styles.leftDiv}>
+            <p className={styles.logintext}>Login to Your Account</p>
+          </div>
+          <div className={styles.rightDiv}>
+            <form onSubmit={handleSubmit}>
+              <label>
+                ACCOUNT NUMBER:
+                <input 
+                  placeholder='000000001'
+                  type="text" 
+                  name="userid" 
+                  value={formData.userid} 
+                  onChange={handleChange} 
+                />
+              </label>
+              <label>
+                PASSWORD:
+                <input 
+                  placeholder='P@55wo0d'
+                  type="password" 
+                  name="password" 
+                  value={formData.password} 
+                  onChange={handleChange} 
+                />
+              </label>
+              <a href="/forgotPassword">Forgot password?</a>
+              <br />
+              {error && <label className={styles.error} style={{ color: 'red' }}>{error}</label>}
+              <br />
+              <Button type="submit" variant="contained">LOGIN</Button>
+              <br /><br />
+            </form>
+            <Button onClick={signup} variant="outlined">New User? Signup</Button>
             <br />
-            {error && <label className={styles.error} style={{ color: 'red' }}>{error}</label>}
-            <br />
-            <Button type="submit" variant="contained">LOGIN</Button>
-            <br /><br />
-          </form>
-          <Button onClick={signup} variant="outlined">New User? Signup</Button>
-          <br />
+          </div>
         </div>
       </div>
     </div>

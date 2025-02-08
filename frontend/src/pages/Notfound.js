@@ -1,4 +1,4 @@
-import logo from '../asserts/404_image.png';
+import logo from '../assets/404_image.png';
 import styles from '../css/notFound.module.css';
 
 function Notfound() {
