@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Button from '@mui/material/Button';
 import axios from 'axios'; 
 // import './css/global.css';
-import styles from './css/login.module.css';
+import styles from '../css/login.module.css';
 
 function Login() {
   let navigate = useNavigate();
@@ -12,11 +12,11 @@ function Login() {
     password: '',
   });
 
-  const [error, setError] = useState(''); // State to store the error message
+  const [error, setError] = useState('');
 
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
-    setError(''); // Reset error message when the user types
+    setError('       ');
   };
 
   const signup = async (event) => {
@@ -24,7 +24,7 @@ function Login() {
   }
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent page reload
+    event.preventDefault();
 
     const loginData = {
       username: formData.userid,
@@ -32,7 +32,7 @@ function Login() {
     };
 
     if (loginData["username"]==='' || loginData["password"]===''){
-      setError("Please enter the details");
+      setError("Please enter all the details");
       return;
     }
 

@@ -1,9 +1,7 @@
-import './css/global.css';
-
 function ForgotPassword() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div>
+      <header>
         Forgot Password
       </header>
     </div>

@@ -1,9 +1,7 @@
-import './css/global.css';
-
 function Register() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div>
+      <header>
         register
       </header>
     </div>

@@ -1,9 +1,7 @@
-import './css/global.css';
-
 function Dashboard() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div>
+      <header>
         Dashboard
       </header>
     </div>

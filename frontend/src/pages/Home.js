@@ -1,9 +1,7 @@
-import './css/global.css';
-
 function Home() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div>
+      <header>
         home
       </header>
     </div>

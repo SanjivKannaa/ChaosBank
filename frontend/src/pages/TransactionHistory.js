@@ -1,9 +1,7 @@
-import './css/global.css';
-
 function TransactionHistory() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div>
+      <header>
         transaction history
       </header>
     </div>

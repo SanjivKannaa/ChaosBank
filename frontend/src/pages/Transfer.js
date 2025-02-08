@@ -1,9 +1,7 @@
-import './css/global.css';
-
 function Transfer() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div>
+      <header>
         transfer
       </header>
     </div>
