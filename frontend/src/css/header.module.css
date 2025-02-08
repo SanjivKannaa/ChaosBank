@@ -1,4 +1,8 @@
 .App {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
   height: 10vh;
   width: 100%;
   background-color: rgb(200, 200, 200);
