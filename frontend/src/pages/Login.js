@@ -5,6 +5,7 @@ import axios from 'axios';
 // import './css/global.css';
 import styles from '../css/login.module.css';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 function Login() {
   let navigate = useNavigate();
@@ -103,6 +104,7 @@ function Login() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

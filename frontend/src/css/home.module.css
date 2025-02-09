@@ -1,0 +1,200 @@
+/* laptops/tabs */
+@media (min-width: 1200px) {
+
+  .App {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10vh;
+    /* Adds spacing between sections */
+  }
+
+  .div1 {
+    top: 20vh;
+    background-color: rgb(210, 210, 210);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    width: 80vw;
+  }
+
+  .div1 img {
+    border-style: double;
+  }
+
+  .div2 {
+    top: 20vh;
+    background-color: rgb(210, 210, 210);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    height: 60vh;
+    width: 80vw;
+  }
+
+  .div21,.div22 {
+    padding-left: 5vw;
+  }
+
+  .div22 ul {
+    padding-left: 5vw;
+  }
+
+
+  .div3 {
+    top: 20vh;
+    background-color: rgb(210, 210, 210);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    width: 80vw;
+    padding-bottom: 10vh;
+  }
+
+  .div31 {
+    padding-left: 5vw;
+    align-self: flex-start;
+  }
+
+  .div32 {
+    /* background-color: red; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    width: 60vw;
+    position: relative;
+  }
+
+    .div32a,
+    .div32b,
+    .div32c,
+    .div32d{
+      /* background-color: green; */
+      border-style: double;
+      align-items: center;
+      height: 20vh;
+      width: 20vw;
+      position: absolute;
+      font-size: 18px;
+      padding: 1vh;
+      font-weight: 700;
+    }
+    
+    .div32a {
+      top: 0;
+      left: 0;
+    }
+    
+    .div32b {
+      top: 0;
+      right: 0;
+    }
+
+    .div32c {
+      bottom: 0;
+      left: 0;
+    }
+    
+    .div32d {
+      bottom: 0;
+      right: 0;
+    }
+}
+
+
+
+
+/* phone */
+@media (max-width: 1199px) {
+  .App {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* gap: 10vh; */
+    background-color: rgb(210, 210, 210);
+    /* Adds spacing between sections */
+  }
+
+  .div1 {
+    top: 20vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    width: 100vw;
+    border-bottom: 5px;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    border-style: double;
+    padding-left: 10vw;
+    /* padding-right: 10vw; */
+  }
+
+  .div11 img{
+    border-style: double;
+  }
+
+  .div2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    height: 80vh;
+    width: 100vw;
+    border-bottom: 5px;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    border-style: double;
+  }
+
+  .div21,
+  .div22 {
+    padding-left: 5vw;
+  }
+
+  .div22 ul {
+    padding-left: 15vw;
+  }
+
+
+  .div3 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    height: 150vh;
+    width: 80vw;
+  }
+
+  .div31 {
+    padding-left: 5vw;
+  }
+
+  .div32 {
+    height: 60vh;
+    width: 60vw;
+  }
+
+  .div32a,
+  .div32b,
+  .div32c,
+  .div32d {
+    /* align-items: center;
+    height: 20vh;
+    width: 20vw; */
+    font-size: 18px;
+    font-weight: 700;
+  }
+}

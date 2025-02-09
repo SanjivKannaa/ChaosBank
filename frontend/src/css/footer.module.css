@@ -1,0 +1,32 @@
+.div {
+    height: 10vh;
+    width: 99vw;
+    background-color: rgb(210, 210, 210);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 3vh;
+    border-bottom: 0px;
+    border-top: 5px;
+    border-left: 0px;
+    border-right: 0px;
+    border-style: double;
+}
+
+.div a {
+    font-weight: bold;
+    font-size: 2vh;
+    text-decoration: none;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    color: black;
+}
+
+.div a:hover {
+    font-size: 2.5vh;
+    color: black;
+    border-style: groove;
+    padding: 1vh;
+}

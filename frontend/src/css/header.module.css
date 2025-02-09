@@ -6,6 +6,11 @@
   height: 10vh;
   width: 100%;
   background-color: rgb(200, 200, 200);
+  border-right: 0px;
+  border-left: 0px;
+  border-top: 0px;
+  border-bottom: 5px;
+  border-style: double;
 }
 
 .appLogo {
