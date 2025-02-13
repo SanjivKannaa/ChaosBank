@@ -11,26 +11,15 @@ services:
     ports:
       - "${port}:5000"
     depends_on:
-      # - mongodb
       - mysql
     networks:
       - reliabank-network
     command: ["python3", "main.py"]
-  # mongodb:
-  #   container_name: reliabank-mongodb
-  #   image: mongo
-  #   expose: 
-  #     - 27017
-  #   volumes:
-  #     - mongodbdata:/data/db
-  #   networks:
-  #     - reliabank-network
   mysql:
     container_name: reliabank-mysql
     image: mysql
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    env_file: .env
     expose:
       - 3306
     networks:

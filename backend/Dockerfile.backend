@@ -5,5 +5,4 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 RUN pip install --upgrade pip
-COPY init.py .
-RUN python init.py
+RUN pip install flask flask-jwt-extended flask-sqlalchemy flask-migrate pymysql flask-cors argon2-cffi python-dotenv cryptography
