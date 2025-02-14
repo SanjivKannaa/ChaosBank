@@ -34,9 +34,15 @@ ph = PasswordHasher()
 # User Model
 class User(db.Model):
     userId = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), nullable=False)
+    username = db.Column(db.String(80), nullable=False, unique=True)
+    profileName = db.Column(db.String(80), nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=True)
+    phoneNumber = db.Column(db.String(10), unique=True, nullable=True)
     balance = db.Column(db.Integer, nullable=False, default=0)
+    securityQuestion1 = db.Column(db.String(100), nullable=False, default=0)
+    securityQuestion2 = db.Column(db.String(100), nullable=False, default=0)
+    securityQuestion3 = db.Column(db.String(100), nullable=False, default=0)
 
 class Transaction(db.Model):
     transId = db.Column(db.Integer, primary_key=True)
@@ -56,20 +62,35 @@ class Transaction(db.Model):
 with app.app_context():
     db.create_all()
 
+# endpoint to check if username is available (used during registration in frontend)
+@app.get("/isUsernameAvailable")
+def isUsernameAvailable():
+    username = request.json.get("username")
+    if not User.query.filter_by(username=username).first():
+        return jsonify({"message": "Username is available"}), 200
+    return jsonify({"error": "Username already used"}), 400
+
 # Register Route
 @app.post("/register")
 def register():
     data = request.json
-    if "username" not in data or "password" not in data:
-        return jsonify({"error": "Not all fields available"}), 400
     username = data.get("username")
+    profileName = data.get("profileName")
     password = data.get("password")
+    email = data.get("email")
+    phoneNumber = data.get("phoneNumber")
+    securityQuestion1 = data.get("securityQuestion1")
+    securityQuestion2 = data.get("securityQuestion2")
+    securityQuestion3 = data.get("securityQuestion3")
+    if "" in [username, profileName, password, email, phoneNumber, securityQuestion1, securityQuestion2, securityQuestion3]:
+        return jsonify({"error": "Not all fields available"}), 400
+    
 
     if User.query.filter_by(username=username).first():
-        return jsonify({"error": "User already exists"}), 400
+        return jsonify({"error": "Username already used"}), 400
 
     hashed_password = ph.hash(password)
-    new_user = User(username=username, password=hashed_password)
+    new_user = User(username=username, password=hashed_password, profileName=profileName, email=email, phoneNumber=phoneNumber, securityQuestion1=securityQuestion1, securityQuestion2=securityQuestion2, securityQuestion3=securityQuestion3)
     db.session.add(new_user)
     db.session.commit()
 
@@ -122,6 +143,9 @@ def dashboard():
     if not user:
         return jsonify({"error": "User not found"}), 404
 
+    email = user.email
+    phoneNumber = user.phoneNumber
+    profileName = user.profileName
     balance = user.balance
     accountNumber = user.userId
 
@@ -183,6 +207,9 @@ def dashboard():
     # Return the user details along with transaction information
     return make_response(jsonify({
         "username": username,
+        "profileName": profileName,
+        "email": email,
+        "phoneNumber": phoneNumber,
         "balance": balance,
         "accountNumber": accountNumber,
         "totalCreditThisMonth": total_credit_this_month,
