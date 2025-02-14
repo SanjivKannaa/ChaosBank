@@ -34,7 +34,7 @@ function QuickLinks() {
     function logout(){
         navigate("/logout");
     }
-    const [user, setUser] = useState('Welcome Guest');
+    const [user, setUser] = useState('Guest');
     
     useEffect(() => {
         if (getCookie('token')) {

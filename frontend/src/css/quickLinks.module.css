@@ -1,5 +1,5 @@
 /* For screens greater than 1200px */
-@media (min-width: 1200px) {
+@media (min-width: 550px) {
     .mobileQuickLinks {
         display: none;
     }
@@ -68,7 +68,7 @@
 }
 
 /* For screens less than 1200px */
-@media (max-width: 1199px) {
+@media (max-width: 549px) {
     .App {
         display: none;
     }
