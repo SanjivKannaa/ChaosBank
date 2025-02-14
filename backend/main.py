@@ -70,6 +70,16 @@ def isUsernameAvailable():
         return jsonify({"message": "Username is available"}), 200
     return jsonify({"error": "Username already used"}), 400
 
+# endpoint to get profileName from username
+@app.get("/getProfileNameFromUsername")
+@jwt_required()
+def getProfileNameFromUsername():
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+    if user:
+        return jsonify({"profileName": user.profileName}), 200
+    return jsonify({"error": "User not found"}), 400
+
 # Register Route
 @app.post("/register")
 def register():
@@ -146,7 +156,7 @@ def dashboard():
     email = user.email
     phoneNumber = user.phoneNumber
     profileName = user.profileName
-    balance = user.balance
+    balance = 0
     accountNumber = user.userId
 
     today = datetime.today()
