@@ -114,6 +114,10 @@
 
 /* phone */
 @media (max-width: 1199px) {
+  body {
+    background-color: rgb(210, 210, 210);
+  }
+  
   .App {
     display: flex;
     flex-direction: column;
@@ -131,14 +135,12 @@
     justify-content: center;
     align-items: center;
     height: 60vh;
-    width: 100vw;
+    width: 90vw;
     border-bottom: 5px;
     border-top: 0px;
     border-left: 0px;
     border-right: 0px;
     border-style: double;
-    padding-left: 10vw;
-    /* padding-right: 10vw; */
   }
 
   .div11 img{

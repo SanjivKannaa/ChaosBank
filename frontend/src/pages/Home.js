@@ -2,10 +2,12 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import styles from '../css/home.module.css';
 import AppName from "../assets/AppName.png"
+import QuickLinks from "../components/QuickLinks";
 
 function Home() {
   return (
     <div className={styles.App}>
+      <QuickLinks />
       <Header />
       <br /><br /><br /><br />
       <div className={styles.div1}>
@@ -96,7 +98,6 @@ function Home() {
           </div>
         </div>
       </div>
-
       <Footer />
 
     </div>
