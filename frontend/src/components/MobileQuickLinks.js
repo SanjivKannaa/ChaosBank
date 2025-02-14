@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import Header from './Header';
 import styles from '../css/mobileQuickLinks.module.css';
 
@@ -38,7 +39,18 @@ function MobileQuickLinks() {
     
     useEffect(() => {
         if (getCookie('token')) {
-            setUser("loggedin");
+            axios.get('http://localhost:5000/getProfileNameFromUsername', {
+                headers: {
+                    Authorization: `Bearer ${getCookie('token')}`,
+                }
+            })
+            .then(response => {
+                setUser(response.data.profileName);
+                console.log(response.data)
+            })
+            .catch(error => {
+                setUser('Guest');
+            });
         }
     }, []);
     function openMobileQuickLinks() {
@@ -66,7 +78,7 @@ function MobileQuickLinks() {
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
                         <path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z" />
                     </svg>
-                    <p>{user}</p>
+                    <p>Welcome, {user}</p>
                 </button>
                 <button onClick={home}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
