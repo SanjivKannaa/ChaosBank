@@ -46,19 +46,35 @@ function Login() {
       });
 
       // Handle different error cases based on response data
-      if (response.data.error === "Wrong Password") {
-        setError('Incorrect password. Please try again.');
-      } else if (response.data.error === "User Not Found") {
-        setError('User not found. Please check your username.');
-      } else {
-        // Successful login
-        console.log('Login Successful:', response.data);
-        // Handle success (e.g., redirect to dashboard or set user state)
-        navigate('/dashboard')
-      }
+      console.log("login successful");
+      const jwtToken = response.data.jwt;
+      const expirationTime = new Date(Date.now() + 30 * 60 * 1000);
+      document.cookie = `token=${jwtToken}; path=/; expires=${expirationTime.toUTCString()}`;
+      navigate('/dashboard')
     } catch (error) {
-      setError('Something went wrong. Please try again later.');
-      console.error('Error:', error);
+      if (error.response) {
+        // Server responded with a status code outside 2xx
+        const { status, data } = error.response;
+
+        if (status === 400) {
+          setError("Not all fields are valid.");
+        } else if (status === 401) {
+          setError(data.error === "User not found" ? "User not found" : "Invalid credentials");
+        } else {
+          setError("Something went wrong.");
+        }
+
+        console.log(data);
+      } else if (error.request) {
+        // Request was made but no response received (Server Down / No Internet)
+        setError("Cannot connect to the server. Please check your internet or try again later.");
+        console.error("No response from server:", error.request);
+      } else {
+        // Other errors (Unexpected issues)
+        setError("An unexpected error occurred.");
+        console.error("Unexpected Error:", error.message);
+      }
+
     }
   };
 
@@ -73,9 +89,9 @@ function Login() {
           <div className={styles.rightDiv}>
             <form onSubmit={handleSubmit}>
               <label>
-                ACCOUNT NUMBER:
+                USERNAME:
                 <input 
-                  placeholder='000000001'
+                  placeholder='username'
                   type="text" 
                   name="userid" 
                   value={formData.userid} 
@@ -85,7 +101,7 @@ function Login() {
               <label>
                 PASSWORD:
                 <input 
-                  placeholder='P@55wo0d'
+                  placeholder='Pa$$w0rd'
                   type="password" 
                   name="password" 
                   value={formData.password} 
