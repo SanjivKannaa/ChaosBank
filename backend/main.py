@@ -156,7 +156,7 @@ def dashboard():
     email = user.email
     phoneNumber = user.phoneNumber
     profileName = user.profileName
-    balance = 0
+    balance = user.balance
     accountNumber = user.userId
 
     today = datetime.today()
