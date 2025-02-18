@@ -243,7 +243,7 @@ def create_transaction():
         receiverId = data.get('receiverId')
         amount = data.get('amount')
 
-        if not receiverId or not amount:
+        if not receiverId or amount=="":
             return jsonify({"error": "Receiver user ID and amount are required"}), 400
 
         if amount <= 0:
@@ -328,13 +328,18 @@ def transaction_history():
             return jsonify({"message": "No transactions found for the specified date range"}), 404
 
         # Serialize the transaction data to send back in the response
-        transaction_history = [{
-            "transaction_id": t.transId,
-            "sender": t.sender,
-            "receiver": t.receiver,
-            "amount": t.amount,
-            "timestamp": t.timeStamp.strftime("%Y-%m-%d %H:%M:%S")
-        } for t in transactions]
+        transaction_history = []
+        for t in transactions:
+            sender_name = User.query.filter_by(userId=t.sender).first().profileName
+            receiver_name = User.query.filter_by(userId=t.receiver).first().profileName
+
+            transaction_history.append({
+                "transaction_id": t.transId,
+                "sender": sender_name,
+                "receiver": receiver_name,
+                "amount": t.amount,
+                "timestamp": t.timeStamp.strftime("%Y-%m-%d %H:%M:%S")
+            })
 
         return make_response(jsonify(transaction_history))
 
