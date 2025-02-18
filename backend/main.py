@@ -233,7 +233,7 @@ def dashboard():
         "lastTransactionTimestamp": last_transaction_timestamp
     }))
 
-@app.post("/transaction")
+@app.post("/transfer")
 @jwt_required()
 def create_transaction():
     try:
@@ -257,6 +257,9 @@ def create_transaction():
 
         if sender.balance < amount:
             return jsonify({"error": "Insufficient balance"}), 400
+
+        if sender.userId == receiver.userId:
+            return jsonify({"error": "cant transfer to self"}), 400
 
         transaction = Transaction(
 
