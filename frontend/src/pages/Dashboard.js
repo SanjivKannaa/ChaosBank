@@ -57,6 +57,7 @@ function Dashboard() {
               totalDebitThisYear: response.data.totalDebitThisYear,
             },
           });
+          console.log(response.data);
         })
         .catch(() => {
           setUserData({ ...userData, username: "Error fetching data" });
