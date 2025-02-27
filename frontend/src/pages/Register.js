@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import QuickLinks from "../components/QuickLinks";
-import styles from "../css/register.module.css"; // Import CSS module
+import styles from "../css/register.module.css";
 import axios from "axios";
-import { responsiveFontSizes } from "@mui/material";
 
 const Register = () => {
   let navigate = useNavigate();
@@ -105,7 +104,7 @@ const Register = () => {
 
   return (
     <div className={styles.container}>
-      {/* <Header /> */}
+      <Header />
       <QuickLinks />
       <div className={styles.registerBox}>
         <h2>Create an Account</h2>
