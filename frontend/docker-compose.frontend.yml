@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  frontend:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true # Fixes issues with live reloading in some environments
+    command: sh -c "npm start"
+
+volumes:
+  reliabank_frontend_node_modules:
