@@ -65,7 +65,7 @@ with app.app_context():
 # endpoint to check if username is available (used during registration in frontend)
 @app.get("/isUsernameAvailable")
 def isUsernameAvailable():
-    username = request.json.get("username")
+    username = request.args.get("username")
     if not User.query.filter_by(username=username).first():
         return jsonify({"message": "Username is available"}), 200
     return jsonify({"error": "Username already used"}), 400
