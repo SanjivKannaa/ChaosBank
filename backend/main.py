@@ -80,6 +80,18 @@ def getProfileNameFromUsername():
         return jsonify({"profileName": user.profileName}), 200
     return jsonify({"error": "User not found"}), 400
 
+# endpoint to get profileName from userId
+@app.get("/getProfileNameFromUserId")
+def getProfileNameFromUserId():
+    user_id = request.args.get("userId")  # Get userId from query parameters
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    user = User.query.filter_by(userId=user_id).first()
+    if user:
+        return jsonify({"profileName": user.profileName}), 200
+    return jsonify({"error": "User not found"}), 404
+
 # Register Route
 @app.post("/register")
 def register():
@@ -241,7 +253,7 @@ def create_transaction():
 
         data = request.get_json()
         receiverId = data.get('receiverId')
-        amount = data.get('amount')
+        amount = int(data.get('amount'))
 
         if not receiverId or amount=="":
             return jsonify({"error": "Receiver user ID and amount are required"}), 400
