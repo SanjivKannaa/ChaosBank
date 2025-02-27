@@ -1,0 +1,13 @@
+version: "3.3"
+services:
+  web-server:
+    container_name: reliabank-webserver
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    restart: always
+    volumes:
+      - ./:/app
+    ports:
+      - "${port}:5000"
+    command: ["python3", "main.py"]

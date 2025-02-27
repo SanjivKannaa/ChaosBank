@@ -30,5 +30,4 @@ networks:
   reliabank-network:
     driver: bridge
 volumes:
-  mongodbdata:
   mysql_data:
