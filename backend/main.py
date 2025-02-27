@@ -92,6 +92,16 @@ def getProfileNameFromUserId():
         return jsonify({"profileName": user.profileName}), 200
     return jsonify({"error": "User not found"}), 404
 
+@app.get("/getUserIdFromUsername")
+@jwt_required()
+def getUserIdFromUsername():
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+
+    if user:
+        return jsonify({"userId": user.userId}), 200
+    return jsonify({"error": "User not found"}), 404
+
 # Register Route
 @app.post("/register")
 def register():
