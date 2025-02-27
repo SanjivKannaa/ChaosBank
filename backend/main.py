@@ -288,7 +288,7 @@ def create_transaction():
 from flask import request, jsonify, make_response
 from datetime import datetime
 
-@app.get("/transactionHistory")
+@app.post("/transactionHistory")
 @jwt_required()
 def transaction_history():
     try:
@@ -330,8 +330,8 @@ def transaction_history():
         # Serialize the transaction data to send back in the response
         transaction_history = []
         for t in transactions:
-            sender_name = User.query.filter_by(userId=t.sender).first().profileName
-            receiver_name = User.query.filter_by(userId=t.receiver).first().profileName
+            sender_name = str(User.query.filter_by(userId=t.sender).first().profileName) + " (" + str(User.query.filter_by(userId=t.sender).first().username) + ")"
+            receiver_name = str(User.query.filter_by(userId=t.receiver).first().profileName) + " (" + str(User.query.filter_by(userId=t.receiver).first().username) + ")"
 
             transaction_history.append({
                 "transaction_id": t.transId,
