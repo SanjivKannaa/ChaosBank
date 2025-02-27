@@ -1,0 +1,43 @@
+version: "3.3"
+services:
+  frontend:
+    build: ./frontend/
+    ports:
+      - "3000:3000"
+    networks:
+      - reliabank-network
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true # Fixes issues with live reloading in some environments
+    command: sh -c "npm start"
+  backend:
+    container_name: reliabank-webserver
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    restart: always
+    volumes:
+      - ./backend:/app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql
+    networks:
+      - reliabank-network
+    command: ["python3", "main.py"]
+  mysql:
+    container_name: reliabank-mysql
+    image: mysql
+    restart: always
+    env_file: ./backend/.env
+    expose:
+      - 3306
+    networks:
+      - reliabank-network
+    volumes:
+      - mysql_data:/var/lib/mysql
+networks:
+  reliabank-network:
+    driver: bridge
+volumes:
+  mysql_data:
