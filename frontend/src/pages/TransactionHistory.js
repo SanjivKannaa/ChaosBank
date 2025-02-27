@@ -5,8 +5,6 @@ import Footer from "../components/Footer";
 import styles from "../css/transactionHistory.module.css";
 import QuickLinks from "../components/QuickLinks";
 import axios from "axios";
-require('dotenv').config();
-const backendUrl = process.env.BACKEND_URL;
 
 
 function TransactionHistory() {
@@ -27,7 +25,7 @@ function TransactionHistory() {
 
   useEffect(() => {
     if (getCookie('token')) {
-      axios.get(`${backendUrl}/getUserIdFromUsername`, {
+      axios.get(`${process.env.REACT_APP_BACKEND_URL}/getUserIdFromUsername`, {
         headers: {
           Authorization: `Bearer ${getCookie('token')}`,
         }
@@ -57,7 +55,7 @@ function TransactionHistory() {
     };
 
     axios
-      .post(`${backendUrl}/transactionHistory`, requestBody, {
+      .post(`${process.env.REACT_APP_BACKEND_URL}/transactionHistory`, requestBody, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

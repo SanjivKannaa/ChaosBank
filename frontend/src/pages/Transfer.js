@@ -6,8 +6,6 @@ import styles from "../css/transfer.module.css";
 import QuickLinks from "../components/QuickLinks";
 import axios from "axios";
 import Swal from "sweetalert2";
-require('dotenv').config();
-const backendUrl = process.env.BACKEND_URL;
 
 
 function Transfer() {
@@ -43,7 +41,7 @@ function Transfer() {
 
     try {
       const response = await axios.get(
-        `${backendUrl}/getProfileNameFromUserId?userId=${receiverId}`
+        `${process.env.REACT_APP_BACKEND_URL}/getProfileNameFromUserId?userId=${receiverId}`
       );
       const receiverName = response.data.profileName;
 
@@ -61,7 +59,7 @@ function Transfer() {
       if (!confirmTransfer.isConfirmed) return;
 
       await axios.post(
-        `${backendUrl}/transfer`,
+        `${process.env.REACT_APP_BACKEND_URL}/transfer`,
         { receiverId, amount },
         {
           headers: {

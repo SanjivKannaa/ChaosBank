@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Header from './Header';
 import styles from '../css/mobileQuickLinks.module.css';
-require('dotenv').config();
-const backendUrl = process.env.BACKEND_URL;
 
 
 function MobileQuickLinks() {
@@ -44,7 +42,7 @@ function MobileQuickLinks() {
     
     useEffect(() => {
         if (getCookie('token')) {
-            axios.get(`${backendUrl}/getProfileNameFromUsername`, {
+            axios.get(`${process.env.REACT_APP_BACKEND_URL}/getProfileNameFromUsername`, {
                 headers: {
                     Authorization: `Bearer ${getCookie('token')}`,
                 }
