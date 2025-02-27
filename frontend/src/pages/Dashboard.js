@@ -5,6 +5,9 @@ import Footer from "../components/Footer";
 import styles from "../css/dashboard.module.css";
 import QuickLinks from "../components/QuickLinks";
 import axios from "axios";
+require('dotenv').config();
+const backendUrl = process.env.BACKEND_URL;
+
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -36,7 +39,7 @@ function Dashboard() {
   useEffect(() => {
     if (getCookie("token")) {
       axios
-        .get("http://localhost:5000/dashboard", {
+        .get(`${backendUrl}/dashboard`, {
           headers: { Authorization: `Bearer ${getCookie("token")}` },
         })
         .then((response) => {

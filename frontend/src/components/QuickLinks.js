@@ -2,6 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from '../css/quickLinks.module.css';
+require('dotenv').config();
+const backendUrl = process.env.BACKEND_URL;
+
 
 function QuickLinks() {
     let navigate = useNavigate();
@@ -40,7 +43,7 @@ function QuickLinks() {
     
     useEffect(() => {
         if (getCookie('token')) {
-            axios.get('http://localhost:5000/getProfileNameFromUsername', {
+            axios.get(`${backendUrl}/getProfileNameFromUsername`, {
                 headers: {
                     Authorization: `Bearer ${getCookie('token')}`,
                 }

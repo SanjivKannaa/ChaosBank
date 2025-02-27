@@ -7,6 +7,9 @@ import styles from '../css/login.module.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import QuickLinks from '../components/QuickLinks';
+require('dotenv').config();
+const backendUrl = process.env.BACKEND_URL;
+
 
 function Login() {
   let navigate = useNavigate();
@@ -40,7 +43,7 @@ function Login() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/login', loginData, {
+      const response = await axios.post(`${backendUrl}/login`, loginData, {
         headers: {
           'Content-Type': 'application/json',
         },

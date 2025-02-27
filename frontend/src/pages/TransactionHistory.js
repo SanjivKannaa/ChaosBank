@@ -5,6 +5,9 @@ import Footer from "../components/Footer";
 import styles from "../css/transactionHistory.module.css";
 import QuickLinks from "../components/QuickLinks";
 import axios from "axios";
+require('dotenv').config();
+const backendUrl = process.env.BACKEND_URL;
+
 
 function TransactionHistory() {
   const navigate = useNavigate();
@@ -24,7 +27,7 @@ function TransactionHistory() {
 
   useEffect(() => {
     if (getCookie('token')) {
-      axios.get('http://localhost:5000/getUserIdFromUsername', {
+      axios.get(`${backendUrl}/getUserIdFromUsername`, {
         headers: {
           Authorization: `Bearer ${getCookie('token')}`,
         }
@@ -54,7 +57,7 @@ function TransactionHistory() {
     };
 
     axios
-      .post("http://localhost:5000/transactionHistory", requestBody, {
+      .post(`${backendUrl}/transactionHistory`, requestBody, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
