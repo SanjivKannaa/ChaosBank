@@ -66,9 +66,13 @@ with app.app_context():
 @app.get("/isUsernameAvailable")
 def isUsernameAvailable():
     username = request.args.get("username")
-    if not User.query.filter_by(username=username).first():
-        return jsonify({"message": "Username is available"}), 200
-    return jsonify({"error": "Username already used"}), 400
+    # fyp-bug -> endpoint returns "username already used" even for DB failure
+    try:
+        if not User.query.filter_by(username=username).first():
+            return jsonify({"message": "Username is available"}), 200
+        return 10/0
+    except:
+        return jsonify({"error": "Username already used"}), 400
 
 # endpoint to get profileName from username
 @app.get("/getProfileNameFromUsername")
