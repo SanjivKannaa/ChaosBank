@@ -27,7 +27,7 @@ const Register = () => {
   const checkUsernameAvailability = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     axios
-    .get(`${process.env.REACT_APP_BACKEND_URL}/isUsernameAvailable?username=${formData.username}`)
+    .get(`${process.env.REACT_APP_BACKEND_URL}/misc/isUsernameAvailable?username=${formData.username}`)
     .then((response) => {
       setUsernameAvailable('1');
       setError('');
@@ -81,7 +81,7 @@ const Register = () => {
     }
 
     axios
-      .post(`${process.env.REACT_APP_BACKEND_URL}/register`, formData, {
+      .post(`${process.env.REACT_APP_BACKEND_URL}/auth/register`, formData, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -99,7 +99,7 @@ const Register = () => {
       })
     setTimeout(() => {
       navigate("/dashboard");
-    }, 1500);
+    }, 500);
   };
 
   return (

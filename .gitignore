@@ -6,3 +6,4 @@ frontend/package-lock.json
 *terraform.tfs*
 *.pem
 *cloudflare.ini
+*__pycache__*

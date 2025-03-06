@@ -41,7 +41,7 @@ function Transfer() {
 
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/getProfileNameFromUserId?userId=${receiverId}`
+        `${process.env.REACT_APP_BACKEND_URL}/misc/getProfileNameFromUserId?userId=${receiverId}`
       );
       const receiverName = response.data.profileName;
 
@@ -59,7 +59,7 @@ function Transfer() {
       if (!confirmTransfer.isConfirmed) return;
 
       await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/transfer`,
+        `${process.env.REACT_APP_BACKEND_URL}/transaction/transfer`,
         { receiverId, amount },
         {
           headers: {
@@ -105,12 +105,12 @@ function Transfer() {
       <div className={styles.div2}>
         <h2>Transfer Money</h2>
         <form className={styles.transferForm} onSubmit={handleTransfer}>
-          <label>ReceiverId Username:</label>
+          <label>ReceiverId :</label>
           <input
             type="text"
             value={receiverId}
             onChange={(e) => setReceiverId(e.target.value)}
-            placeholder="Enter receiverId's username"
+            placeholder="Enter receiverId's"
             required
           />
 

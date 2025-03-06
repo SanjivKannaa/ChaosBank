@@ -25,7 +25,7 @@ function TransactionHistory() {
 
   useEffect(() => {
     if (getCookie('token')) {
-      axios.get(`${process.env.REACT_APP_BACKEND_URL}/getUserIdFromUsername`, {
+      axios.get(`${process.env.REACT_APP_BACKEND_URL}/misc/getUserIdFromUsername`, {
         headers: {
           Authorization: `Bearer ${getCookie('token')}`,
         }
@@ -55,7 +55,7 @@ function TransactionHistory() {
     };
 
     axios
-      .post(`${process.env.REACT_APP_BACKEND_URL}/transactionHistory`, requestBody, {
+      .post(`${process.env.REACT_APP_BACKEND_URL}/transaction/transactionHistory`, requestBody, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

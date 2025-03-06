@@ -37,7 +37,7 @@ function Dashboard() {
   useEffect(() => {
     if (getCookie("token")) {
       axios
-        .get(`${process.env.REACT_APP_BACKEND_URL}/dashboard`, {
+        .get(`${process.env.REACT_APP_BACKEND_URL}/user/dashboard`, {
           headers: { Authorization: `Bearer ${getCookie("token")}` },
         })
         .then((response) => {

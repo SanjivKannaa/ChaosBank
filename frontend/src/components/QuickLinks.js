@@ -41,7 +41,7 @@ function QuickLinks() {
     
     useEffect(() => {
         if (getCookie('token')) {
-            axios.get(`${process.env.REACT_APP_BACKEND_URL}/getProfileNameFromUsername`, {
+            axios.get(`${process.env.REACT_APP_BACKEND_URL}/misc/getProfileNameFromUsername`, {
                 headers: {
                     Authorization: `Bearer ${getCookie('token')}`,
                 }
