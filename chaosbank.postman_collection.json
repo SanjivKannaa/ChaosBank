@@ -1,0 +1,409 @@
+{
+	"info": {
+		"_postman_id": "e01ae0f0-90d4-4be4-837a-425fd897b35d",
+		"name": "chaosbank",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22312156"
+	},
+	"item": [
+		{
+			"name": "/auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"test\",\n    \"password\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://api.chaosbank.sanjivkannaa.tech/auth/login",
+							"protocol": "http",
+							"host": [
+								"api",
+								"chaosbank",
+								"sanjivkannaa",
+								"tech"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"test\",\n    \"profileName\": \"test2\",\n    \"password\": \"test\",\n    \"email\": \"test@test.com\",\n    \"phoneNumber\": \"test\",\n    \"securityQuestion1\": \"test\",\n    \"securityQuestion2\": \"test\",\n    \"securityQuestion3\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://api.chaosbank.sanjivkannaa.tech/auth/register",
+							"protocol": "http",
+							"host": [
+								"api",
+								"chaosbank",
+								"sanjivkannaa",
+								"tech"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/user",
+			"item": [
+				{
+					"name": "dashboard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0MTI0MTE1NSwianRpIjoiZTAxMDJiNWUtNjc1Zi00OTBiLWJiMGItZmRkZmUyMWZhMjIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3NDEyNDExNTUsImNzcmYiOiIyNmYyMGQ2YS01MWE5LTQxODktYWY5My05YjgxZjM1MzdiMGYiLCJleHAiOjE3NDEyNDI5NTV9.9L75XuGEASB3fMKD39w9EsBf2tdZpGwcc7iFyLOoXSk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://api.chaosbank.sanjivkannaa.tech/user/dashboard",
+							"protocol": "http",
+							"host": [
+								"api",
+								"chaosbank",
+								"sanjivkannaa",
+								"tech"
+							],
+							"path": [
+								"user",
+								"dashboard"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/transaction",
+			"item": [
+				{
+					"name": "transfer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0MTI0MTE1NSwianRpIjoiZTAxMDJiNWUtNjc1Zi00OTBiLWJiMGItZmRkZmUyMWZhMjIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3NDEyNDExNTUsImNzcmYiOiIyNmYyMGQ2YS01MWE5LTQxODktYWY5My05YjgxZjM1MzdiMGYiLCJleHAiOjE3NDEyNDI5NTV9.9L75XuGEASB3fMKD39w9EsBf2tdZpGwcc7iFyLOoXSk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"receiverId\": 1,\n    \"amount\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://api.chaosbank.sanjivkannaa.tech/transaction/transfer",
+							"protocol": "http",
+							"host": [
+								"api",
+								"chaosbank",
+								"sanjivkannaa",
+								"tech"
+							],
+							"path": [
+								"transaction",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "transaction history",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0MTI0MTE1NSwianRpIjoiZTAxMDJiNWUtNjc1Zi00OTBiLWJiMGItZmRkZmUyMWZhMjIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3NDEyNDExNTUsImNzcmYiOiIyNmYyMGQ2YS01MWE5LTQxODktYWY5My05YjgxZjM1MzdiMGYiLCJleHAiOjE3NDEyNDI5NTV9.9L75XuGEASB3fMKD39w9EsBf2tdZpGwcc7iFyLOoXSk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fromDate\": \"2025-12-30\",\n    \"toDate\": \"2025-12-31\"\n    // both are optional parameters\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://api.chaosbank.sanjivkannaa.tech/transaction/transactionHistory",
+							"protocol": "http",
+							"host": [
+								"api",
+								"chaosbank",
+								"sanjivkannaa",
+								"tech"
+							],
+							"path": [
+								"transaction",
+								"transactionHistory"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/misc",
+			"item": [
+				{
+					"name": "get Profile NameFrom Username",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0MTI0NDI2NCwianRpIjoiZGYwMmI3N2ItZTNjNy00ZWM4LWI1MTAtM2U1YmZlOTFjOGUzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3NDEyNDQyNjQsImNzcmYiOiIxOTViZWZmMi03NTg0LTQxYjMtYjVkYS0wZTk2NzI2OGE5ODkiLCJleHAiOjE3NDEyNDYwNjR9.NkhPUuiIJcAqVLPnekYGKuA9rc4UwM9fE8T09r_0pC4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://api.chaosbank.sanjivkannaa.tech/misc/getProfileNameFromUsername",
+							"protocol": "http",
+							"host": [
+								"api",
+								"chaosbank",
+								"sanjivkannaa",
+								"tech"
+							],
+							"path": [
+								"misc",
+								"getProfileNameFromUsername"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get UserID From Username",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0MTI0MTE1NSwianRpIjoiZTAxMDJiNWUtNjc1Zi00OTBiLWJiMGItZmRkZmUyMWZhMjIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3NDEyNDExNTUsImNzcmYiOiIyNmYyMGQ2YS01MWE5LTQxODktYWY5My05YjgxZjM1MzdiMGYiLCJleHAiOjE3NDEyNDI5NTV9.9L75XuGEASB3fMKD39w9EsBf2tdZpGwcc7iFyLOoXSk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://api.chaosbank.sanjivkannaa.tech/misc/getUserIdFromUsername",
+							"protocol": "http",
+							"host": [
+								"api",
+								"chaosbank",
+								"sanjivkannaa",
+								"tech"
+							],
+							"path": [
+								"misc",
+								"getUserIdFromUsername"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "is Username Available",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://api.chaosbank.sanjivkannaa.tech/misc/isUsernameAvailable?username=test",
+							"protocol": "http",
+							"host": [
+								"api",
+								"chaosbank",
+								"sanjivkannaa",
+								"tech"
+							],
+							"path": [
+								"misc",
+								"isUsernameAvailable"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "test"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get Profile NameFrom user ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0MTI0MTE1NSwianRpIjoiZTAxMDJiNWUtNjc1Zi00OTBiLWJiMGItZmRkZmUyMWZhMjIwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3NDEyNDExNTUsImNzcmYiOiIyNmYyMGQ2YS01MWE5LTQxODktYWY5My05YjgxZjM1MzdiMGYiLCJleHAiOjE3NDEyNDI5NTV9.9L75XuGEASB3fMKD39w9EsBf2tdZpGwcc7iFyLOoXSk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://api.chaosbank.sanjivkannaa.tech/misc/getProfileNameFromUserId?userId=1",
+							"protocol": "http",
+							"host": [
+								"api",
+								"chaosbank",
+								"sanjivkannaa",
+								"tech"
+							],
+							"path": [
+								"misc",
+								"getProfileNameFromUserId"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
