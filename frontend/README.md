@@ -2,6 +2,15 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## To run frontend using docker
+
+```
+$ git clone https://github.com/sanjivkannaa/chaosbank.git
+$ cd chaosbank/frontend
+$ cp ./frontend/.env.example ./frontend/.env
+$ docker-compose -f docker-compose.frontend.yml up -d
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
