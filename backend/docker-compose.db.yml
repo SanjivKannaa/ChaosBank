@@ -1,13 +1,44 @@
 version: "3.3"
 services:
   mysql:
+    image: mysql:8.0
     container_name: reliabank-mysql
-    image: mysql
     restart: always
     env_file: .env
-    ports:
-      - 3306:3306
+    command: --server-id=1
     volumes:
-      - mysql_data:/var/lib/mysql
+      - master_data:/var/lib/mysql
+    networks:
+      - mysql_net
+    ports:
+      - "3306:3306"
+
+  mysql-slave1:
+    image: mysql:8.0
+    container_name: reliabank-mysql-slave1
+    restart: always
+    env_file: .env
+    command: --server-id=2 --read-only=1
+    volumes:
+      - slave1_data:/var/lib/mysql
+    networks:
+      - mysql_net
+
+  mysql-slave2:
+    image: mysql:8.0
+    container_name: reliabank-mysql-slave2
+    restart: always
+    env_file: .env
+    command: --server-id=3 --read-only=1
+    volumes:
+      - slave2_data:/var/lib/mysql
+    networks:
+      - mysql_net
+
 volumes:
-  mysql_data:
+  master_data:
+  slave1_data:
+  slave2_data:
+
+networks:
+  mysql_net:

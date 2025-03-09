@@ -11,3 +11,9 @@ services:
     ports:
       - "${port}:5000"
     command: ["python3", "main.py"]
+    networks:
+      - backend_mysql_net
+
+networks:
+  backend_mysql_net:
+    external: true
