@@ -1,0 +1,55 @@
+version: "3.3"
+services:
+  loadbalancer:
+    container_name: reliabank-loadbalancer
+    build:
+      context: .
+      dockerfile: Dockerfile.loadbalancer
+    ports:
+      - "80:80"
+    networks:
+      - reliabank-network
+  frontend:
+    container_name: reliabank-frontend
+    build:
+      context: ../../frontend/
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - reliabank-network
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+    command: sh -c "npm start"
+  backend:
+    container_name: reliabank-webserver
+    build:
+      context: ../../backend/
+      dockerfile: Dockerfile.backend
+    restart: always
+    volumes:
+      - ../../backend:/app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql
+    networks:
+      - reliabank-network
+    command: ["python3", "main.py"]
+  mysql:
+    image: mysql:8.0
+    container_name: reliabank-mysql
+    restart: always
+    env_file: ../../backend/.env
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - reliabank-network
+    ports:
+      - "3306:3306"
+networks:
+  reliabank-network:
+    driver: bridge
+volumes:
+  mysql:
