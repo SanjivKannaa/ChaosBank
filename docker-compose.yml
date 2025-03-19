@@ -3,7 +3,7 @@ services:
   frontend:
     container_name: reliabank-frontend
     build:
-      context: ./frontend
+      context: ./frontend/
       dockerfile: Dockerfile.frontend
     ports:
       - "3000:3000"
