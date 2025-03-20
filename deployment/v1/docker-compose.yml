@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.loadbalancer
+    restart: always
     ports:
       - "80:80"
     networks:
