@@ -6,7 +6,7 @@
 
   vars:
     repo_url: "https://github.com/sanjivkannaa/chaosbank"
-    repo_dest: "/home/jsk/chaosbank"
+    repo_dest: "/home/admin/chaosbank"
     ansible_user: "admin"
 
   tasks:
@@ -49,29 +49,21 @@
     - name: Get DB Private IP from SSM
       shell: aws ssm get-parameter --name "/chaosbank/db_private_ip" --region "ap-south-1" --query "Parameter.Value" --output text
       register: ssm_output
-      changed_when: false  # Prevents showing unnecessary changes in Ansible runs
+      changed_when: false
 
     - name: Debug SSM Output
       debug:
         msg: "DB Private IP is \"{{ ssm_output.stdout }}\""
 
-    - name: Get DB Private IP from SSM
-      set_fact:
-        db_private_ip: "{{ lookup('amazon.aws.ssm_parameter', '/chaosbank/db_private_ip', region='ap-south-1') }}"
-
-    - name: Debug SSM Output
-      debug:
-        msg: "DB Private IP is \"{{ db_private_ip }}\""
-
     - name: Replace HOST value in config file
       ansible.builtin.lineinfile:
         path: "{{ repo_dest }}/backend/.env"
-        regexp: '^HOST='
-        line: "HOST=\"{{ ssm_output.value }}\""
+        regexp: '^MYSQL_HOST=".*"'
+        line: 'MYSQL_HOST="{{ ssm_output.stdout }}"'
         backup: yes
 
     - name: Start Docker Compose stack
-      command: docker-compose -f "{{ repo_dest }}/deployment/v2/docker-compose.frontend.yml" up -d
+      command: docker-compose -f "{{ repo_dest }}/deployment/v2/docker-compose.backend.yml" up -d
       args:
         chdir: "{{ repo_dest }}"
 
