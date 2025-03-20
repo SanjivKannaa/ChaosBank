@@ -39,15 +39,15 @@
 
     - name: Copy backend/.env files
       copy:
-        src: "{{ repo_dest }}/frontend/.env.example"
-        dest: "{{ repo_dest }}/frontend/.env"
+        src: "{{ repo_dest }}/backend/.env.example"
+        dest: "{{ repo_dest }}/backend/.env"
         remote_src: yes
         owner: admin
         group: admin
         mode: '0644'
 
     - name: Start Docker Compose stack
-      command: docker-compose -f "{{ repo_dest }}/deployment/v1/docker-compose.db.yml" up -d
+      command: docker-compose -f "{{ repo_dest }}/deployment/v2/docker-compose.database.yml" up -d
       args:
         chdir: "{{ repo_dest }}"
 

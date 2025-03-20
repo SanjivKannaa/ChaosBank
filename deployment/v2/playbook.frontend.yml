@@ -47,7 +47,7 @@
         mode: '0644'
 
     - name: Start Docker Compose stack
-      command: docker-compose -f "{{ repo_dest }}/deployment/v1/docker-compose.frontend.yml" up -d
+      command: docker-compose -f "{{ repo_dest }}/deployment/v2/docker-compose.frontend.yml" up -d
       args:
         chdir: "{{ repo_dest }}"
 
