@@ -39,8 +39,8 @@
 
     - name: Copy frontend/.env files
       copy:
-        src: "{{ repo_dest }}/backend/.env.example"
-        dest: "{{ repo_dest }}/backend/.env"
+        src: "{{ repo_dest }}/frontend/.env.example"
+        dest: "{{ repo_dest }}/frontend/.env"
         remote_src: yes
         owner: admin
         group: admin
@@ -48,8 +48,8 @@
 
     - name: Copy backend/.env files
       copy:
-        src: "{{ repo_dest }}/frontend/.env.example"
-        dest: "{{ repo_dest }}/frontend/.env"
+        src: "{{ repo_dest }}/backend/.env.example"
+        dest: "{{ repo_dest }}/backend/.env"
         remote_src: yes
         owner: admin
         group: admin
