@@ -1,6 +1,7 @@
 ---
 - name: Setup ChaosBank with Docker and Nginx
-  hosts: server
+  hosts: localhost
+  connection: local
   become: true
 
   vars:
