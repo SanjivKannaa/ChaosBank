@@ -1,0 +1,13 @@
+version: "3.3"
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: reliabank-mysql
+    restart: always
+    env_file: ../../backend/.env
+    volumes:
+      - master_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+volumes:
+  master_data:

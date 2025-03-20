@@ -1,0 +1,58 @@
+---
+- name: Setup ChaosBank with Docker and Nginx
+  hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    repo_url: "https://github.com/sanjivkannaa/chaosbank"
+    repo_dest: "/home/admin/chaosbank"
+    ansible_user: "admin"
+
+  tasks:
+    - name: Install required packages
+      apt:
+        name:
+          - git
+          - docker.io
+          - docker-compose
+        state: present
+        update_cache: yes
+
+    - name: Add user to the Docker group (post-installation)
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Clone ChaosBank repository
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ repo_dest }}"
+        version: main
+
+    - name: Copy backend/.env files
+      copy:
+        src: "{{ repo_dest }}/frontend/.env.example"
+        dest: "{{ repo_dest }}/frontend/.env"
+        remote_src: yes
+        owner: admin
+        group: admin
+        mode: '0644'
+
+    - name: Start Docker Compose stack
+      command: docker-compose -f "{{ repo_dest }}/deployment/v1/docker-compose.db.yml" up -d
+      args:
+        chdir: "{{ repo_dest }}"
+
+  handlers:
+    - name: Restart Docker
+      systemd:
+        name: docker
+        state: restarted

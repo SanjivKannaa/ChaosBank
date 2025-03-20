@@ -1,0 +1,13 @@
+version: "3.3"
+services:
+  frontend:
+    container_name: reliabank-frontend
+    build:
+      context: ../../frontend/
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+    command: sh -c "npm start"
