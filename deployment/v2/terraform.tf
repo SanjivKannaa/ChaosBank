@@ -167,11 +167,11 @@ resource "aws_instance" "DB_ec2" {
     sudo apt install -y ansible git
 
     # Run ansible-pull with the correct playbook path
-    /usr/bin/ansible-pull -U https://github.com/sanjivkannaa/chaosbank.git -i localhost deployment/v2/playbook.db.yml \
+    /usr/bin/ansible-pull -U https://github.com/sanjivkannaa/chaosbank.git -i localhost deployment/v2/playbook.database.yml \
     -o | tee -a /var/log/ansible-pull.log
 
     # Optional: Set up a cron job for periodic updates (every 5 minutes)
-    echo "*/5 * * * * root /usr/bin/ansible-pull -U https://github.com/sanjivkannaa/chaosbank.git -i localhost deployment/v2/playbook.db.yml -o >> /var/log/ansible-pull.log 2>&1" | sudo tee -a /etc/crontab
+    echo "*/5 * * * * root /usr/bin/ansible-pull -U https://github.com/sanjivkannaa/chaosbank.git -i localhost deployment/v2/playbook.database.yml -o >> /var/log/ansible-pull.log 2>&1" | sudo tee -a /etc/crontab
   EOF
 }
 
