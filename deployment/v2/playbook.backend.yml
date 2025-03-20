@@ -6,7 +6,7 @@
 
   vars:
     repo_url: "https://github.com/sanjivkannaa/chaosbank"
-    repo_dest: "/home/admin/chaosbank"
+    repo_dest: "/home/jsk/chaosbank"
     ansible_user: "admin"
 
   tasks:
@@ -18,11 +18,6 @@
           - docker-compose
         state: present
         update_cache: yes
-
-    - name: Install AWS CLI
-      apt:
-        name: awscli
-        state: present
 
     - name: Add user to the Docker group (post-installation)
       user:
@@ -55,6 +50,18 @@
       shell: aws ssm get-parameter --name "/chaosbank/db_private_ip" --region "ap-south-1" --query "Parameter.Value" --output text
       register: ssm_output
       changed_when: false  # Prevents showing unnecessary changes in Ansible runs
+
+    - name: Debug SSM Output
+      debug:
+        msg: "DB Private IP is \"{{ ssm_output.stdout }}\""
+
+    - name: Get DB Private IP from SSM
+      set_fact:
+        db_private_ip: "{{ lookup('amazon.aws.ssm_parameter', '/chaosbank/db_private_ip', region='ap-south-1') }}"
+
+    - name: Debug SSM Output
+      debug:
+        msg: "DB Private IP is \"{{ db_private_ip }}\""
 
     - name: Replace HOST value in config file
       ansible.builtin.lineinfile:
