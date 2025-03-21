@@ -41,7 +41,11 @@ def update_nginx_config(name, ips):
     logging.info(f"Updating Nginx config with IPs: {list(ips)}")
     with open(f"/etc/nginx/conf.d/{name}s.conf", "w") as f:
         for ip in ips:
-            f.writelines(f"server {ip}:5000;\n")
+            if name=="backend":
+                f.writelines(f"server {ip}:5000;\n")
+            else:
+                f.writelines(f"server {ip}:3000;\n")
+            
 
 def reload_nginx():
     system("nginx -s reload")
