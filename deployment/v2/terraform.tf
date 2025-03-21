@@ -137,6 +137,32 @@ resource "aws_security_group" "DB_sg" {
   }
 }
 
+# Create IAM Role for Load Balancer
+resource "aws_iam_role" "lb_role" {
+  name = "lb-instance-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
+      Principal = { Service = "ec2.amazonaws.com" }
+    }]
+  })
+}
+
+# Attach AmazonEC2ReadOnlyAccess Policy
+resource "aws_iam_policy_attachment" "lb_readonly_access" {
+  name       = "lb-readonly-access"
+  roles      = [aws_iam_role.lb_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
+}
+
+# Create IAM Instance Profile for Load Balancer
+resource "aws_iam_instance_profile" "lb_instance_profile" {
+  name = "lb-instance-profile"
+  role = aws_iam_role.lb_role.name
+}
+
 resource "aws_instance" "LB_ec2" {
   ami                    = "ami-03c68e52484d7488f"
   instance_type          = "t3.micro"
@@ -144,10 +170,23 @@ resource "aws_instance" "LB_ec2" {
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.LB_sg.id]
   associate_public_ip_address = true
+  iam_instance_profile = aws_iam_instance_profile.lb_instance_profile.name
   
   tags = {
     Name = "Load Balancer"
   }
+  user_data = <<-EOF
+    #!/bin/bash
+    sudo apt update -y
+    sudo apt install -y ansible git
+
+    # Run ansible-pull with the correct playbook path
+    /usr/bin/ansible-pull -U https://github.com/sanjivkannaa/chaosbank.git -i localhost deployment/v2/playbook.loadbalancer.yml \
+    -o | tee -a /var/log/ansible-pull.log
+
+    # Optional: Set up a cron job for periodic updates (every 5 minutes)
+    echo "*/5 * * * * root /usr/bin/ansible-pull -U https://github.com/sanjivkannaa/chaosbank.git -i localhost deployment/v2/playbook.loadbalancer.yml -o >> /var/log/ansible-pull.log 2>&1" | sudo tee -a /etc/crontab
+  EOF
 }
 
 resource "aws_instance" "DB_ec2" {

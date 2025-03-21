@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  reliabank-loadbalancer: # note that this container needs to be built after any change
+    build: ./loadbalancer
+    container_name: reliabank-loadbalancer
+    pull_policy: always
+    ports:
+      - "80:80"
+    restart: always
