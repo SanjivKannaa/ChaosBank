@@ -137,58 +137,6 @@ resource "aws_security_group" "DB_sg" {
   }
 }
 
-# Create IAM Role for Load Balancer
-resource "aws_iam_role" "lb_role" {
-  name = "lb-instance-role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Action = "sts:AssumeRole",
-      Effect = "Allow",
-      Principal = { Service = "ec2.amazonaws.com" }
-    }]
-  })
-}
-
-# Attach AmazonEC2ReadOnlyAccess Policy
-resource "aws_iam_policy_attachment" "lb_readonly_access" {
-  name       = "lb-readonly-access"
-  roles      = [aws_iam_role.lb_role.name]
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
-}
-
-# Create IAM Instance Profile for Load Balancer
-resource "aws_iam_instance_profile" "lb_instance_profile" {
-  name = "lb-instance-profile"
-  role = aws_iam_role.lb_role.name
-}
-
-resource "aws_instance" "LB_ec2" {
-  ami                    = "ami-03c68e52484d7488f"
-  instance_type          = "t3.micro"
-  key_name               = "aws-default"
-  subnet_id              = aws_subnet.public.id
-  vpc_security_group_ids = [aws_security_group.LB_sg.id]
-  associate_public_ip_address = true
-  iam_instance_profile = aws_iam_instance_profile.lb_instance_profile.name
-  
-  tags = {
-    Name = "Load Balancer"
-  }
-  user_data = <<-EOF
-    #!/bin/bash
-    sudo apt update -y
-    sudo apt install -y ansible git
-
-    # Run ansible-pull with the correct playbook path
-    /usr/bin/ansible-pull -U https://github.com/sanjivkannaa/chaosbank.git -i localhost deployment/v2/playbook.loadbalancer.yml \
-    -o | tee -a /var/log/ansible-pull.log
-
-    # Optional: Set up a cron job for periodic updates (every 5 minutes)
-    echo "*/5 * * * * root /usr/bin/ansible-pull -U https://github.com/sanjivkannaa/chaosbank.git -i localhost deployment/v2/playbook.loadbalancer.yml -o >> /var/log/ansible-pull.log 2>&1" | sudo tee -a /etc/crontab
-  EOF
-}
-
 resource "aws_instance" "DB_ec2" {
   ami                    = "ami-03c68e52484d7488f"
   instance_type          = "t3.micro"
@@ -311,6 +259,7 @@ resource "aws_launch_configuration" "FE_lc" {
 }
 
 resource "aws_autoscaling_group" "Backend_asg" {
+  name = "backend-asg"
   desired_capacity     = 2
   min_size            = 1
   max_size            = 4
@@ -326,6 +275,7 @@ resource "aws_autoscaling_group" "Backend_asg" {
 }
 
 resource "aws_autoscaling_group" "Frontend_asg" {
+  name = "frontendend-asg"
   desired_capacity     = 2
   min_size            = 1
   max_size            = 4
@@ -340,7 +290,101 @@ resource "aws_autoscaling_group" "Frontend_asg" {
   }
 }
 
-output "load_balancer_public_ip" {
-  description = "The public IP of the Load Balancer EC2 instance"
-  value       = aws_instance.LB_ec2.public_ip
+data "aws_instances" "backend_instances" {
+  instance_tags = {
+    "aws:autoscaling:groupName" = aws_autoscaling_group.backend_asg.name
+  }
+}
+
+# Create an SSM Parameter to store the private IP of the backend 1
+resource "aws_ssm_parameter" "be1_private_ip" {
+  name  = "/chaosbank/be1_private_ip"
+  type  = "String"
+  value = data.aws_instances.backend_instances.private_ips[0]
+}
+
+# Create an SSM Parameter to store the private IP of the backend 2
+resource "aws_ssm_parameter" "be2_private_ip" {
+  name  = "/chaosbank/be2_private_ip"
+  type  = "String"
+  value = data.aws_instance.backend2.private_ip
+}
+
+# Create an SSM Parameter to store the private IP of the frontend 1
+resource "aws_ssm_parameter" "fe1_private_ip" {
+  name  = "/chaosbank/fe1_private_ip"
+  type  = "String"
+  value = length(data.aws_instances.frontend_instances.private_ips) > 0 ? data.aws_instances.frontend_instances.private_ips[0] : ""
+}
+
+# Create an SSM Parameter to store the private IP of the frontend 2
+resource "aws_ssm_parameter" "fe2_private_ip" {
+  name  = "/chaosbank/fe2_private_ip"
+  type  = "String"
+  value = length(data.aws_instances.frontend_instances.private_ips) > 0 ? data.aws_instances.frontend_instances.private_ips[1] : ""
+}
+
+# Create an IAM Policy to allow read access to this specific SSM Parameter
+resource "aws_iam_policy" "lb_ssm_read_policy" {
+  name        = "lbChaosBankReadSSMPolicy"
+  description = "Allow read access to specific SSM parameter"
+  policy      = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "ssm:GetParameter"
+        Resource = [
+          aws_ssm_parameter.be1_private_ip.arn,
+          aws_ssm_parameter.be2_private_ip.arn,
+          aws_ssm_parameter.fe1_private_ip.arn,
+          aws_ssm_parameter.fe2_private_ip.arn
+        ]
+      }
+    ]
+  })
+}
+
+# Create an IAM Role for Load Balancer ASG
+resource "aws_iam_role" "loadbalancer_role" {
+  name = "loadbalancerSSMRole"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+# Attach the IAM Policy to the IAM Role (Only for Load Balancer ASG)
+resource "aws_iam_policy_attachment" "lb_ssm_read_attachment" {
+  name       = "ssm-read-attachment"
+  policy_arn = aws_iam_policy.lb_ssm_read_policy.arn
+  roles      = [aws_iam_role.loadbalancer_role.name]
+}
+
+# Create an IAM Instance Profile (Only for Load Balancer ASG)
+resource "aws_iam_instance_profile" "loadbalancer_instance_profile" {
+  name = "LoadBalancerSSMInstanceProfile"
+  role = aws_iam_role.loadbalancer_role.name
+}
+
+resource "aws_instance" "LB_ec2" {
+  ami                    = "ami-03c68e52484d7488f"
+  instance_type          = "t3.micro"
+  key_name               = "aws-default"
+  subnet_id              = aws_subnet.public.id
+  vpc_security_group_ids = [aws_security_group.LB_sg.id]
+  associate_public_ip_address = true
+  iam_instance_profile = aws_iam_instance_profile.loadbalancer_instance_profile.name
+  
+  tags = {
+    Name = "Load Balancer"
+  }
 }

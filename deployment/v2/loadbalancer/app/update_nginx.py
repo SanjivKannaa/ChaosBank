@@ -51,13 +51,13 @@ while True:
     new_ips_backend = fetch_instance_ips("Backend")
     if backend != new_ips_backend:
         restart = True
-        update_nginx_config("Backend", new_ips_backend)
+        update_nginx_config("backend", new_ips_backend)
         logging.info("Backends updated to => " + str(new_ips_backend))
         backend = new_ips_backend
     new_ips_frontend = fetch_instance_ips("Frontend")
     if frontend != new_ips_frontend:
         restart = True
-        update_nginx_config("Frontend", new_ips_frontend)
+        update_nginx_config("frontend", new_ips_frontend)
         logging.info("Frontends updated to => " + str(new_ips_frontend))
         frontend = new_ips_frontend
     if restart:
