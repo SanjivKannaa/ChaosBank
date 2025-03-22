@@ -50,4 +50,4 @@ def transaction_history():
         "receiver": User.query.get(t.receiver).profileName+"["+str(User.query.get(t.receiver).userId)+"]",
         "amount": t.amount,
         "timestamp": t.timeStamp.strftime("%Y-%m-%d %H:%M:%S")
-    } for t in transactions])
+    } for t in transactions[::-1]])
