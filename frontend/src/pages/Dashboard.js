@@ -47,6 +47,7 @@ function Dashboard() {
             phoneNumber: response.data.phoneNumber,
             email: response.data.email,
             balance: response.data.balance,
+            accountNumber: "RB"+String(response.data.accountNumber).padStart(7, "0"),
             transactions: {
               totalCreditThisMonth: response.data.totalCreditThisMonth,
               totalDebitThisMonth: response.data.totalDebitThisMonth,
@@ -75,7 +76,7 @@ function Dashboard() {
       <div className={styles.div1}>
         <div className={styles.div1left}>
           <h1>Profile Name: {userData.profileName}</h1>
-          <h1>Account Number: {userData.username}</h1>
+          <h1>Account Number: {userData.accountNumber}</h1>
           <h1>Phone Number: {userData.phoneNumber}</h1>
           <h1>Email: {userData.email}</h1>
         </div>
