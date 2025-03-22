@@ -1,7 +1,9 @@
 version: "3.3"
 services:
   frontend:
-    build: ./frontend/
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
     ports:
       - "3000:3000"
     networks:
