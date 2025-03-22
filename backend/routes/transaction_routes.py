@@ -46,8 +46,8 @@ def transaction_history():
     transactions = query.all()
     return jsonify([{
         "transaction_id": t.transId,
-        "sender": User.query.get(t.sender).profileName,
-        "receiver": User.query.get(t.receiver).profileName,
+        "sender": User.query.get(t.sender).profileName+"["+str(User.query.get(t.sender).userId)+"]",
+        "receiver": User.query.get(t.receiver).profileName+"["+str(User.query.get(t.receiver).userId)+"]",
         "amount": t.amount,
         "timestamp": t.timeStamp.strftime("%Y-%m-%d %H:%M:%S")
     } for t in transactions])

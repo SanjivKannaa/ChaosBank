@@ -32,6 +32,7 @@ function TransactionHistory() {
       })
       .then(response => {
         setUserId(response.data.userId);
+        console.log(response.data.userId);
       })
       .catch(() => {
         setUserId('');
@@ -130,6 +131,7 @@ function TransactionHistory() {
               </thead>
               <tbody>
                 {transactions.map((transaction) => {
+                  console.log(transaction.receiver);
                   const isCredit = transaction.receiver.includes(userId);
                   return (
                     <tr key={transaction.transaction_id}>
