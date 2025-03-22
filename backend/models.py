@@ -9,9 +9,6 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=True)
     phoneNumber = db.Column(db.String(10), unique=True, nullable=True)
     balance = db.Column(db.Integer, nullable=False, default=1000)
-    securityQuestion1 = db.Column(db.String(100), nullable=False, default=0)
-    securityQuestion2 = db.Column(db.String(100), nullable=False, default=0)
-    securityQuestion3 = db.Column(db.String(100), nullable=False, default=0)
 
 class Transaction(db.Model):
     transId = db.Column(db.Integer, primary_key=True)

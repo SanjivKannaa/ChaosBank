@@ -11,7 +11,7 @@ ph = PasswordHasher()
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.json
-    required_fields = ["username", "profileName", "password", "email", "phoneNumber", "securityQuestion1", "securityQuestion2", "securityQuestion3"]
+    required_fields = ["username", "profileName", "password", "email", "phoneNumber"]
     if any(field not in data or not data[field] for field in required_fields):
         return jsonify({"error": "Not all fields available"}), 400
 
@@ -47,10 +47,7 @@ def register():
         return make_response(jsonify({"error": " ".join(password_errors)}), 400)
 
     hashed_password = ph.hash(data["password"])
-    new_user = User(username=data["username"], password=hashed_password, profileName=data["profileName"],
-                    email=data["email"], phoneNumber=data["phoneNumber"],
-                    securityQuestion1=data["securityQuestion1"], securityQuestion2=data["securityQuestion2"],
-                    securityQuestion3=data["securityQuestion3"])
+    new_user = User(username=data["username"], password=hashed_password, profileName=data["profileName"], email=data["email"], phoneNumber=data["phoneNumber"])
     db.session.add(new_user)
     db.session.commit()
 

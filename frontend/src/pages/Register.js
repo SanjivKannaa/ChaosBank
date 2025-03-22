@@ -15,9 +15,6 @@ const Register = () => {
     confirmPassword: "",
     email: "",
     phoneNumber: "",
-    securityQuestion1: "",
-    securityQuestion2: "",
-    securityQuestion3: "",
   });
   const [usernameAvailable, setUsernameAvailable] = useState('1'); // should be set at '' for false
 
@@ -59,10 +56,7 @@ const Register = () => {
       password,
       confirmPassword,
       email,
-      phoneNumber,
-      securityQuestion1,
-      securityQuestion2,
-      securityQuestion3,
+      phoneNumber
     } = formData;
     console.log(formData);
 
@@ -70,7 +64,7 @@ const Register = () => {
       setError('Username not available')
       return;
     }
-    if (!username || !profileName || !password || !confirmPassword || !email || !phoneNumber || !securityQuestion1 || !securityQuestion1 || !securityQuestion2 || !securityQuestion2 || !securityQuestion3 || !securityQuestion3) {
+    if (!username || !profileName || !password || !confirmPassword || !email || !phoneNumber) {
       setError("All fields are required.");
       return;
     }
@@ -171,36 +165,6 @@ const Register = () => {
             name="confirmPassword"
             placeholder="Confirm password"
             value={formData.confirmPassword}
-            onChange={handleChange}
-            className={styles.input}
-          />
-
-          <label>Security Question 1: What is the name of your first pet?</label>
-          <input
-            type="text"
-            name="securityQuestion1"
-            placeholder="Your answer"
-            value={formData.securityQuestion1}
-            onChange={handleChange}
-            className={styles.input}
-          />
-
-          <label>Security Question 2: What was the name of your first school?</label>
-          <input
-            type="text"
-            name="securityQuestion2"
-            placeholder="Your answer"
-            value={formData.securityQuestion2}
-            onChange={handleChange}
-            className={styles.input}
-          />
-
-          <label>Security Question 3: What was the name of your favorite teacher?</label>
-          <input
-            type="text"
-            name="securityQuestion3"
-            placeholder="Your answer"
-            value={formData.securityQuestion3}
             onChange={handleChange}
             className={styles.input}
           />

@@ -9,7 +9,7 @@ export let options = {
 
 export default function () {
     let username = `load_test_user_${uuidv4()}`;
-    let password = 'Test@1234';
+    let password = 'TestTest@1234';
 
     // Register user
     let registerPayload = JSON.stringify({
@@ -17,10 +17,7 @@ export default function () {
         profileName: username,
         password: password,
         email: username+"@mail.com",
-        phoneNumber: Math.floor(1000000000 + Math.random() * 9000000000).toString(),
-        securityQuestion1: "test",
-        securityQuestion2: "test",
-        securityQuestion3: "test"
+        phoneNumber: Math.floor(1000000000 + Math.random() * 9000000000).toString()
     });
     let registerRes = http.post('http://api.chaosbank.sanjivkannaa.tech/auth/register', registerPayload, {
         headers: { 'Content-Type': 'application/json' }

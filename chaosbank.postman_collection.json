@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "e01ae0f0-90d4-4be4-837a-425fd897b35d",
 		"name": "chaosbank",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "22312156"
 	},
 	"item": [
@@ -12,62 +12,42 @@
 				{
 					"name": "login",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"test\",\n    \"password\": \"test\"\n}",
+							"raw": "{\n    \"username\": \"test\",\n    \"password\": \"Test@123Test\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": {
-							"raw": "http://api.chaosbank.sanjivkannaa.tech/auth/login",
-							"protocol": "http",
-							"host": [
-								"api",
-								"chaosbank",
-								"sanjivkannaa",
-								"tech"
-							],
-							"path": [
-								"auth",
-								"login"
-							]
-						}
+						"url": "http://api.chaosbank.sanjivkannaa.tech/auth/login"
 					},
 					"response": []
 				},
 				{
 					"name": "register",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"test\",\n    \"profileName\": \"test2\",\n    \"password\": \"test\",\n    \"email\": \"test@test.com\",\n    \"phoneNumber\": \"test\",\n    \"securityQuestion1\": \"test\",\n    \"securityQuestion2\": \"test\",\n    \"securityQuestion3\": \"test\"\n}",
+							"raw": "{\n    \"username\": \"test\",\n    \"profileName\": \"test2\",\n    \"password\": \"Test@123Test\",\n    \"email\": \"test@test.com\",\n    \"phoneNumber\": \"test\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": {
-							"raw": "http://api.chaosbank.sanjivkannaa.tech/auth/register",
-							"protocol": "http",
-							"host": [
-								"api",
-								"chaosbank",
-								"sanjivkannaa",
-								"tech"
-							],
-							"path": [
-								"auth",
-								"register"
-							]
-						}
+						"url": "http://api.chaosbank.sanjivkannaa.tech/auth/register"
 					},
 					"response": []
 				}
@@ -79,32 +59,9 @@
 				{
 					"name": "dashboard",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": "http://api.chaosbank.sanjivkannaa.tech/user/dashboard",
-							"protocol": "http",
-							"host": [
-								"api",
-								"chaosbank",
-								"sanjivkannaa",
-								"tech"
-							],
-							"path": [
-								"user",
-								"dashboard"
-							]
-						}
+						"url": "http://api.chaosbank.sanjivkannaa.tech/user/dashboard"
 					},
 					"response": []
 				}
@@ -116,16 +73,6 @@
 				{
 					"name": "transfer",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -137,61 +84,25 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://api.chaosbank.sanjivkannaa.tech/transaction/transfer",
-							"protocol": "http",
-							"host": [
-								"api",
-								"chaosbank",
-								"sanjivkannaa",
-								"tech"
-							],
-							"path": [
-								"transaction",
-								"transfer"
-							]
-						}
+						"url": "http://api.chaosbank.sanjivkannaa.tech/transaction/transfer"
 					},
 					"response": []
 				},
 				{
 					"name": "transaction history",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"fromDate\": \"2025-12-30\",\n    \"toDate\": \"2025-12-31\"\n    // both are optional parameters\n}",
+							"raw": "{\n    \"fromDate\": \"\",\n    \"toDate\": \"\"\n    // both are optional parameters\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": {
-							"raw": "http://api.chaosbank.sanjivkannaa.tech/transaction/transactionHistory",
-							"protocol": "http",
-							"host": [
-								"api",
-								"chaosbank",
-								"sanjivkannaa",
-								"tech"
-							],
-							"path": [
-								"transaction",
-								"transactionHistory"
-							]
-						}
+						"url": "http://api.chaosbank.sanjivkannaa.tech/transaction/transactionHistory"
 					},
 					"response": []
 				}
@@ -206,15 +117,29 @@
 						"disableBodyPruning": true
 					},
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "",
-									"type": "string"
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
+						},
+						"url": "http://api.chaosbank.sanjivkannaa.tech/misc/getProfileNameFromUsername"
+					},
+					"response": []
+				},
+				{
+					"name": "get Profile NameFrom user ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
@@ -228,7 +153,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://api.chaosbank.sanjivkannaa.tech/misc/getProfileNameFromUsername",
+							"raw": "http://api.chaosbank.sanjivkannaa.tech/misc/getProfileNameFromUserId?userId=1",
 							"protocol": "http",
 							"host": [
 								"api",
@@ -238,7 +163,13 @@
 							],
 							"path": [
 								"misc",
-								"getProfileNameFromUsername"
+								"getProfileNameFromUserId"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -250,16 +181,6 @@
 						"disableBodyPruning": true
 					},
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -271,20 +192,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://api.chaosbank.sanjivkannaa.tech/misc/getUserIdFromUsername",
-							"protocol": "http",
-							"host": [
-								"api",
-								"chaosbank",
-								"sanjivkannaa",
-								"tech"
-							],
-							"path": [
-								"misc",
-								"getUserIdFromUsername"
-							]
-						}
+						"url": "http://api.chaosbank.sanjivkannaa.tech/misc/getUserIdFromUsername"
 					},
 					"response": []
 				},
@@ -327,62 +235,15 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "get Profile NameFrom user ID",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://api.chaosbank.sanjivkannaa.tech/misc/getProfileNameFromUserId?userId=1",
-							"protocol": "http",
-							"host": [
-								"api",
-								"chaosbank",
-								"sanjivkannaa",
-								"tech"
-							],
-							"path": [
-								"misc",
-								"getProfileNameFromUserId"
-							],
-							"query": [
-								{
-									"key": "userId",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		}
 	],
 	"auth": {
-		"type": "bearer"
+		"type": "bearer",
+		"bearer": {
+			"token": ""
+		}
 	},
 	"event": [
 		{
