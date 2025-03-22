@@ -6,7 +6,6 @@ import styles from "../css/transactionHistory.module.css";
 import QuickLinks from "../components/QuickLinks";
 import axios from "axios";
 
-
 function TransactionHistory() {
   const navigate = useNavigate();
   const [transactions, setTransactions] = useState([]);
@@ -14,7 +13,7 @@ function TransactionHistory() {
   const [toDate, setToDate] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [userId, setUserId] = useState('');
+  const [userId, setUserId] = useState("");
 
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
@@ -24,31 +23,39 @@ function TransactionHistory() {
   };
 
   useEffect(() => {
-    if (getCookie('token')) {
-      axios.get(`${process.env.REACT_APP_BACKEND_URL}/misc/getUserIdFromUsername`, {
-        headers: {
-          Authorization: `Bearer ${getCookie('token')}`,
-        }
-      })
-      .then(response => {
-        setUserId(response.data.userId);
-        console.log(response.data.userId);
-      })
-      .catch(() => {
-        setUserId('');
-      });
-    }
-  }, []);
-
-  const fetchTransactions = () => {
-    setLoading(true);
-    setError(null);
     const token = getCookie("token");
 
     if (!token) {
       navigate("/login");
       return;
     }
+
+    const fetchUserIdAndSummary = async () => {
+      try {
+        const [userIdRes] = await Promise.all([
+          axios.get(`${process.env.REACT_APP_BACKEND_URL}/misc/getUserIdFromUsername`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`${process.env.REACT_APP_BACKEND_URL}/transaction/summary`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+
+        setUserId(userIdRes.data.userId);
+      } catch (err) {
+        setError("Failed to fetch user ID or transaction summary");
+      }
+    };
+
+    fetchUserIdAndSummary();
+    fetchTransactions();
+  }, []);
+
+  const fetchTransactions = () => {
+    setLoading(true);
+    setError(null);
+
+    const token = getCookie("token");
 
     const requestBody = {
       ...(fromDate && { fromDate }),
@@ -72,25 +79,12 @@ function TransactionHistory() {
       });
   };
 
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
-
-  const totalCredit = transactions.reduce((acc, transaction) => {
-    return transaction.receiver.includes(userId) ? acc + transaction.amount : acc;
-  }, 0);
-
-  const totalDebit = transactions.reduce((acc, transaction) => {
-    return transaction.sender.includes(userId) ? acc + transaction.amount : acc;
-  }, 0);
-
   return (
     <div>
       <Header />
       <QuickLinks />
       <div className={styles.div2}>
-        <h2>Transaction Summary</h2>
-
+        <h2>Transaction History</h2>
         <div className={styles.filterContainer}>
           <div className={styles.filterInputs}>
             <label>From:</label>
@@ -130,29 +124,25 @@ function TransactionHistory() {
                 </tr>
               </thead>
               <tbody>
-                {transactions.map((transaction) => {
-                  console.log(transaction.receiver);
-                  const isCredit = transaction.receiver.includes(userId);
-                  return (
-                    <tr key={transaction.transaction_id}>
-                      <td>{transaction.transaction_id}</td>
-                      <td>{transaction.sender}</td>
-                      <td>{transaction.receiver}</td>
-                      <td className={isCredit ? styles.credit : styles.debit}>
-                        ₹{transaction.amount}
-                      </td>
-                      <td>{transaction.timestamp}</td>
-                    </tr>
-                  );
-                })}
+                {transactions.map((transaction) => (
+                  <tr key={transaction.transaction_id}>
+                    <td>{transaction.transaction_id}</td>
+                    <td>{transaction.sender}</td>
+                    <td>{transaction.receiver}</td>
+                    <td
+                      className={
+                        transaction.receiver.includes(userId)
+                          ? styles.credit
+                          : styles.debit
+                      }
+                    >
+                      ₹{transaction.amount}
+                    </td>
+                    <td>{transaction.timestamp}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
-            
-            <div className={styles.totalSummary}>
-              <div className={styles.totalCredit}>Total Credit: ₹{totalCredit}</div>
-              <br/>
-              <div className={styles.totalDebit}>Total Debit: ₹{totalDebit}</div>
-            </div>
           </>
         )}
       </div>

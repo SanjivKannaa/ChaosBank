@@ -6,9 +6,9 @@ import styles from "../css/dashboard.module.css";
 import QuickLinks from "../components/QuickLinks";
 import axios from "axios";
 
-
 function Dashboard() {
   const navigate = useNavigate();
+
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -22,16 +22,8 @@ function Dashboard() {
     phoneNumber: "Fetching...",
     email: "Fetching...",
     balance: "Fetching...",
-    transactions: {
-      totalCreditThisMonth: "Fetching...",
-      totalDebitThisMonth: "Fetching...",
-      totalCreditLastMonth: "Fetching...",
-      totalDebitLastMonth: "Fetching...",
-      totalCreditLast6Months: "Fetching...",
-      totalDebitLast6Months: "Fetching...",
-      totalCreditThisYear: "Fetching...",
-      totalDebitThisYear: "Fetching...",
-    },
+    accountNumber: "Fetching...",
+    transactions: [],
   });
 
   useEffect(() => {
@@ -41,28 +33,30 @@ function Dashboard() {
           headers: { Authorization: `Bearer ${getCookie("token")}` },
         })
         .then((response) => {
-          setUserData({
+          setUserData((prevData) => ({
+            ...prevData,
             username: response.data.username,
             profileName: response.data.profileName,
             phoneNumber: response.data.phoneNumber,
             email: response.data.email,
             balance: response.data.balance,
-            accountNumber: "RB"+String(response.data.accountNumber).padStart(7, "0"),
-            transactions: {
-              totalCreditThisMonth: response.data.totalCreditThisMonth,
-              totalDebitThisMonth: response.data.totalDebitThisMonth,
-              totalCreditLastMonth: response.data.totalCreditLastMonth,
-              totalDebitLastMonth: response.data.totalDebitLastMonth,
-              totalCreditLast6Months: response.data.totalCreditLast6Months,
-              totalDebitLast6Months: response.data.totalDebitLast6Months,
-              totalCreditThisYear: response.data.totalCreditThisYear,
-              totalDebitThisYear: response.data.totalDebitThisYear,
-            },
-          });
-          console.log(response.data);
+            accountNumber: "RB" + String(response.data.accountNumber).padStart(7, "0"),
+          }));
         })
         .catch(() => {
           setUserData({ ...userData, username: "Error fetching data" });
+        });
+
+      axios
+        .get(`${process.env.REACT_APP_BACKEND_URL}/transaction/lastTenTransactions`, {
+          headers: { Authorization: `Bearer ${getCookie("token")}` },
+        })
+        .then((response) => {
+          console.log(response.data);
+          setUserData((prevData) => ({ ...prevData, transactions: response.data || [] }));
+        })
+        .catch(() => {
+          setUserData((prevData) => ({ ...prevData, transactions: [] }));
         });
     } else {
       navigate("/login");
@@ -85,40 +79,37 @@ function Dashboard() {
           <p className={styles.balance}>₹ {userData.balance}</p>
         </div>
       </div>
+
       <div className={styles.div2}>
-        <h2>Transaction Summary</h2>
-        <table className={styles.transactionTable}>
-          <thead>
-            <tr>
-              <th>Period</th>
-              <th>Credit (₹)</th>
-              <th>Debit (₹)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>This Month</td>
-              <td>{userData.transactions.totalCreditThisMonth}</td>
-              <td>{userData.transactions.totalDebitThisMonth}</td>
-            </tr>
-            <tr>
-              <td>Last Month</td>
-              <td>{userData.transactions.totalCreditLastMonth}</td>
-              <td>{userData.transactions.totalDebitLastMonth}</td>
-            </tr>
-            <tr>
-              <td>Last 6 Months</td>
-              <td>{userData.transactions.totalCreditLast6Months}</td>
-              <td>{userData.transactions.totalDebitLast6Months}</td>
-            </tr>
-            <tr>
-              <td>This Year</td>
-              <td>{userData.transactions.totalCreditThisYear}</td>
-              <td>{userData.transactions.totalDebitThisYear}</td>
-            </tr>
-          </tbody>
-        </table>
+        <h2>Recent Transactions</h2>
+        {userData.transactions.length === 0 ? (
+          <p>No recent transactions found.</p>
+        ) : (
+          <table className={styles.transactionTable}>
+            <thead>
+              <tr>
+                <th>Transaction ID</th>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Amount (₹)</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              {userData.transactions.map((transaction) => (
+                <tr key={transaction.transId}>
+                  <td>{transaction.transId}</td>
+                  <td>{transaction.sender}</td>
+                  <td>{transaction.receiver}</td>
+                  <td>₹{transaction.amount}</td>
+                  <td>{transaction.timestamp}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
+
       <Footer />
     </div>
   );

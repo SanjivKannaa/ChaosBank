@@ -19,7 +19,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"test\",\n    \"password\": \"Test@123Test\"\n}",
+							"raw": "{\n    \"username\": \"test2\",\n    \"password\": \"Test@123Test\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -40,7 +40,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"test\",\n    \"profileName\": \"test2\",\n    \"password\": \"Test@123Test\",\n    \"email\": \"test@test.com\",\n    \"phoneNumber\": \"test\"\n}",
+							"raw": "{\n    \"username\": \"test2\",\n    \"profileName\": \"test2\",\n    \"password\": \"Test@123Test\",\n    \"email\": \"test2@test.com\",\n    \"phoneNumber\": \"test1\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -103,6 +103,27 @@
 							}
 						},
 						"url": "http://api.chaosbank.sanjivkannaa.tech/transaction/transactionHistory"
+					},
+					"response": []
+				},
+				{
+					"name": "Last 10 Transactinos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fromDate\": \"\",\n    \"toDate\": \"\"\n    // both are optional parameters\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://api.chaosbank.sanjivkannaa.tech/transaction/lastTenTransactions"
 					},
 					"response": []
 				}
