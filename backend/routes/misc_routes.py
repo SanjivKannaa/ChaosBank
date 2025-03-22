@@ -40,4 +40,7 @@ def getProfileNameFromUserId():
 def getUserIdFromUsername():
     username = get_jwt_identity()
     user = User.query.filter_by(username=username).first()
-    return jsonify({"userId": user.userId}) if user else jsonify({"error": "User not found"}), 404
+    if user:
+        return jsonify({"userId": user.userId}), 200
+    else:
+        return jsonify({"error": "User not found"}), 404
