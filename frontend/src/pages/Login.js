@@ -111,7 +111,6 @@ function Login() {
                   onChange={handleChange} 
                 />
               </label>
-              <a href="/forgotPassword">Forgot password?</a>
               <br />
               {error && <label className={styles.error} style={{ color: 'red' }}>{error}</label>}
               <br />
