@@ -40,7 +40,13 @@ def getProfileNameFromUserId():
 def getUserIdFromUsername():
     username = get_jwt_identity()
     user = User.query.filter_by(username=username).first()
+        
     if user:
         return jsonify({"userId": user.userId}), 200
-    else:
-        return jsonify({"error": "User not found"}), 404
+    
+    return jsonify({"error": "User not found"}), 404
+
+@misc_bp.route("/getUsername", methods=["GET"])
+@jwt_required()
+def getUsername():
+    return jsonify({"username": get_jwt_identity()}), 200
