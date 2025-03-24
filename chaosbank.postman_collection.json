@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e01ae0f0-90d4-4be4-837a-425fd897b35d",
+		"_postman_id": "29040951-cea7-4a0f-8f70-a83e57e14cf3",
 		"name": "chaosbank",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "22312156"
@@ -19,7 +19,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"test2\",\n    \"password\": \"Test@123Test\"\n}",
+							"raw": "{\n    \"username\": \"test\",\n    \"password\": \"Test@123Test\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -40,7 +40,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"test2\",\n    \"profileName\": \"test2\",\n    \"password\": \"Test@123Test\",\n    \"email\": \"test2@test.com\",\n    \"phoneNumber\": \"test1\"\n}",
+							"raw": "{\n    \"username\": \"test\",\n    \"profileName\": \"test\",\n    \"password\": \"Test@123Test\",\n    \"email\": \"test2@test.com\",\n    \"phoneNumber\": \"9999999999\",\n    \"date_of_birth\": \"2001-09-11\", //mm-dd-yyyy\n    \"address\": {\n        \"door_plot_no\": \"test\",\n        \"street_name_1\": \"test\",\n        \"street_name_2\": \"test\",\n        \"city\": \"test\",\n        \"state\": \"test\",\n        \"country\": \"test\",\n        \"pin\": \"620015\"\n    },\n    \"aadhar_number\": \"987654321012\",\n    \"pan_number\": \"AAAPZ4321C\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -235,7 +235,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://api.chaosbank.sanjivkannaa.tech/misc/isUsernameAvailable?username=test",
+							"raw": "http://api.chaosbank.sanjivkannaa.tech/misc/isUsernameAvailable?username=test2",
 							"protocol": "http",
 							"host": [
 								"api",
@@ -250,7 +250,7 @@
 							"query": [
 								{
 									"key": "username",
-									"value": "test"
+									"value": "test2"
 								}
 							]
 						}
