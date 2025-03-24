@@ -24,7 +24,6 @@ const Register = () => {
       country: "",
       pin: "",
     },
-    mobile_number: "",
     aadhar_number: "",
     pan_number: "",
     balance: 0, // Initialize with a default balance, possibly 0
@@ -105,7 +104,7 @@ const Register = () => {
 
     // --- Comprehensive Validation ---
     if (!formData.username || !formData.profileName || !formData.password || !formData.email ||
-        !formData.phoneNumber || !formData.date_of_birth || !formData.mobile_number ||
+        !formData.phoneNumber || !formData.date_of_birth ||
         !formData.aadhar_number || !formData.pan_number) {
       setError("All fields are required.");
       return;
@@ -266,35 +265,25 @@ const Register = () => {
           />
 
 
-        <label>Mobile Number:</label>
-            <input
-                type="tel"
-                name="mobile_number"
-                placeholder="Enter mobile number"
-                value={formData.mobile_number}
-                onChange={handleChange}
-                className={styles.input}
-            />
+          <label>Aadhar Number:</label>
+          <input
+              type="text"
+              name="aadhar_number"
+              placeholder="Enter Aadhar number"
+              value={formData.aadhar_number}
+              onChange={handleChange}
+              className={styles.input}
+          />
 
-            <label>Aadhar Number:</label>
-            <input
-                type="text"
-                name="aadhar_number"
-                placeholder="Enter Aadhar number"
-                value={formData.aadhar_number}
-                onChange={handleChange}
-                className={styles.input}
-            />
-
-            <label>PAN Number:</label>
-            <input
-                type="text"
-                name="pan_number"
-                placeholder="Enter PAN number"
-                value={formData.pan_number}
-                onChange={handleChange}
-                className={styles.input}
-            />
+          <label>PAN Number:</label>
+          <input
+              type="text"
+              name="pan_number"
+              placeholder="Enter PAN number"
+              value={formData.pan_number}
+              onChange={handleChange}
+              className={styles.input}
+          />
 
         <h3>Address</h3>
             <label>Door/Plot No:</label>

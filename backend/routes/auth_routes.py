@@ -12,7 +12,7 @@ ph = PasswordHasher()
 def register():
     data = request.json
     required_fields = [
-        "username", "date_of_birth", "address", "mobile_number", "aadhar_number", "pan_number", "profileName", "password", "phoneNumber", "balance", "email"
+        "username", "date_of_birth", "address", "aadhar_number", "pan_number", "profileName", "password", "phoneNumber", "email"
     ]
     
     address_fields = [
@@ -62,7 +62,6 @@ def register():
         profileName=data["profileName"],
         password=hashed_password,
         phoneNumber=data["phoneNumber"],
-        balance=data["balance"],
         email=data["email"],
         date_of_birth=data["date_of_birth"],
         door_plot_no=data["address"]["door_plot_no"],
@@ -72,7 +71,6 @@ def register():
         state=data["address"]["state"],
         country=data["address"]["country"],
         pin=data["address"]["pin"],
-        mobile_number=data["mobile_number"],
         aadhar_number=data["aadhar_number"],
         pan_number=data["pan_number"]
     )

@@ -17,7 +17,6 @@ class User(db.Model):
     state = db.Column(db.String(50), nullable=True)
     country = db.Column(db.String(50), nullable=True)
     pin = db.Column(db.String(10), nullable=True)
-    mobile_number = db.Column(db.String(15), unique=True, nullable=False)
     aadhar_number = db.Column(db.String(12), unique=True, nullable=True)
     pan_number = db.Column(db.String(10), unique=True, nullable=True)
 
