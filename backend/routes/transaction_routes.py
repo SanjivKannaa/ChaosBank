@@ -145,3 +145,39 @@ def summary():
         "totalDebitThisYear": total_debit_this_year,
         "lastTransactionTimestamp": last_transaction_timestamp
     }))
+
+@transaction_bp.route("/deposit", methods=["POST"])
+@jwt_required()
+def deposit():
+    sender_username = get_jwt_identity()
+    data = request.get_json()
+    amount = data.get("amount")
+
+    user = User.query.filter_by(username=sender_username).first()
+
+    if not user:
+        return jsonify({"error": "Account not found!"}), 400
+
+    user.balance += amount
+
+    db.session.commit()
+
+    return jsonify({"message": "Deposit successful"})
+
+@transaction_bp.route("/withdraw", methods=["POST"])
+@jwt_required()
+def credit():
+    sender_username = get_jwt_identity()
+    data = request.get_json()
+    amount = data.get("amount")
+
+    user = User.query.filter_by(username=sender_username).first()
+
+    if not user:
+        return jsonify({"error": "Account not found!"}), 400
+
+    user.balance -= amount
+
+    db.session.commit()
+
+    return jsonify({"message": "withdrawal successful"})

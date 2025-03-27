@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "29040951-cea7-4a0f-8f70-a83e57e14cf3",
+		"_postman_id": "0fdd8eba-2993-41ff-9c2b-2039bf1f706a",
 		"name": "chaosbank",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "22312156"
@@ -89,6 +89,24 @@
 					"response": []
 				},
 				{
+					"name": "Deposit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://api.chaosbank.sanjivkannaa.tech/transaction/deposit"
+					},
+					"response": []
+				},
+				{
 					"name": "transaction history",
 					"request": {
 						"method": "POST",
@@ -124,6 +142,24 @@
 							}
 						},
 						"url": "http://api.chaosbank.sanjivkannaa.tech/transaction/lastTenTransactions"
+					},
+					"response": []
+				},
+				{
+					"name": "Withdraw",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://api.chaosbank.sanjivkannaa.tech/transaction/withdraw"
 					},
 					"response": []
 				}
