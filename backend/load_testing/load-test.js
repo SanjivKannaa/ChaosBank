@@ -74,6 +74,24 @@ export default function () {
 
     let authToken = loginRes.json('jwt');
 
+    // Deposit
+    let depositPayload = JSON.stringify({
+      amount: 5000  // Deposit 5000 units
+    });
+    let depositRes = http.post('http://api.chaosbank.sanjivkannaa.tech/transaction/deposit', depositPayload, {
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` }
+    });
+    check(depositRes, { 'deposit successful': (res) => res.status === 200 });
+
+    // Withdraw
+    let withdrawPayload = JSON.stringify({
+      amount: 2000  // Withdraw 2000 units
+    });
+    let withdrawRes = http.post('http://api.chaosbank.sanjivkannaa.tech/transaction/withdraw', withdrawPayload, {
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${authToken}` }
+    });
+    check(withdrawRes, { 'withdrawal successful': (res) => res.status === 200 });
+
     // Access dashboard
     let dashboardRes = http.get('http://api.chaosbank.sanjivkannaa.tech/user/dashboard', {
         headers: { Authorization: `Bearer ${authToken}` }

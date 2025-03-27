@@ -8,7 +8,7 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=True)
     phoneNumber = db.Column(db.String(10), unique=True, nullable=True)
-    balance = db.Column(db.Integer, nullable=False, default=1000)
+    balance = db.Column(db.Integer, nullable=False, default=0)
     date_of_birth = db.Column(db.Date, nullable=True)
     door_plot_no = db.Column(db.String(20), nullable=True)
     street_name_1 = db.Column(db.String(100), nullable=True)
