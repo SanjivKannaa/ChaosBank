@@ -54,6 +54,13 @@ resource "aws_security_group" "LB_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 61208
+    to_port     = 61208
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -75,6 +82,13 @@ resource "aws_security_group" "BE_sg" {
   ingress {
     from_port   = 22
     to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 61208
+    to_port     = 61208
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -104,6 +118,13 @@ resource "aws_security_group" "FE_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 61208
+    to_port     = 61208
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -125,6 +146,13 @@ resource "aws_security_group" "DB_sg" {
   ingress {
     from_port   = 22
     to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 61208
+    to_port     = 61208
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

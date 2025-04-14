@@ -16,8 +16,23 @@
           - git
           - docker.io
           - docker-compose
+          - glances
         state: present
         update_cache: yes
+
+    - name: Download and extract Glances static public folder
+      become: true
+      shell: |
+        GLANCES_VERSION=$(glances -V | cut -zd" " -f2 | tr -d v)
+        wget -O - https://github.com/nicolargo/glances/archive/refs/tags/v${GLANCES_VERSION}.tar.gz | \
+        tar -xz -C /usr/lib/python3/dist-packages/glances/outputs/static/ \
+          --strip-components=4 \
+          --wildcards \
+          glances-*/glances/outputs/static/public/
+
+    - name: Run glances in web UI mode
+      shell: |
+        nohup glances -w  > /var/log/glances.log 2>&1 &
 
     - name: Add user to the Docker group (post-installation)
       user:
