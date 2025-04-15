@@ -31,8 +31,9 @@
           glances-*/glances/outputs/static/public/
 
     - name: Run glances in web UI mode
+      become: true
       shell: |
-        nohup glances -w  > /var/log/glances.log 2>&1 &
+        nohup glances -w -p 80  > /var/log/glances.log 2>&1 &
 
     - name: Add user to the Docker group (post-installation)
       user:
