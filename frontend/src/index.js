@@ -9,6 +9,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Transfer from './pages/Transfer';
 import TransactionHistory from './pages/TransactionHistory';
+import Deposit from './pages/Deposit';
+import Withdrawal from './pages/Withdrawal';
 import Notfound from './pages/Notfound';
 import reportWebVitals from './reportWebVitals';
 
@@ -23,6 +25,8 @@ root.render(
         <Route path="/register" element={<Register />}></Route>
         <Route path="/transfer" element={<Transfer />}></Route>
         <Route path="/transactionHistory" element={<TransactionHistory />}></Route>
+        <Route path="/deposit" element={<Deposit />}></Route>
+        <Route path="/withdrawal" element={<Withdrawal />}></Route>
         <Route path="*" element={<Notfound />}></Route>
       </Routes>
     </BrowserRouter>

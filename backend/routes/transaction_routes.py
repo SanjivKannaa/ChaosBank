@@ -151,7 +151,7 @@ def summary():
 def deposit():
     sender_username = get_jwt_identity()
     data = request.get_json()
-    amount = data.get("amount")
+    amount = int(data.get("amount"))
 
     user = User.query.filter_by(username=sender_username).first()
 
@@ -169,7 +169,7 @@ def deposit():
 def credit():
     sender_username = get_jwt_identity()
     data = request.get_json()
-    amount = data.get("amount")
+    amount = int(data.get("amount"))
 
     user = User.query.filter_by(username=sender_username).first()
 
