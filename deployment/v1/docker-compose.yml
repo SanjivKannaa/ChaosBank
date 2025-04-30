@@ -2,9 +2,10 @@ version: "3.3"
 services:
   loadbalancer:
     container_name: reliabank-loadbalancer
-    build:
-      context: .
-      dockerfile: Dockerfile.loadbalancer
+    image: sanjivkannaajeganathan/chaosbank:v1_loadbalancer
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile.loadbalancer
     restart: always
     ports:
       - "80:80"
@@ -12,13 +13,14 @@ services:
       - reliabank-network
   frontend:
     container_name: reliabank-frontend
-    build:
-      context: ../../frontend/
-      dockerfile: Dockerfile.frontend
+    image: sanjivkannaajeganathan/chaosbank:v1_frontend
+    # build:
+    #   context: ../../frontend/
+    #   dockerfile: Dockerfile.frontend
     restart: always
     volumes:
       - ../../frontend:/app
-    ports:  
+    ports:
       - "3000:3000"
     networks:
       - reliabank-network
@@ -28,9 +30,10 @@ services:
     command: sh -c "npm start"
   backend:
     container_name: reliabank-webserver
-    build:
-      context: ../../backend/
-      dockerfile: Dockerfile.backend
+    image: sanjivkannaajeganathan/chaosbank:v1_backend
+    # build:
+    #   context: ../../backend/
+    #   dockerfile: Dockerfile.backend
     restart: always
     volumes:
       - ../../backend:/app
