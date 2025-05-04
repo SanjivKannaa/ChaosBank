@@ -18,8 +18,8 @@ services:
     #   context: ../../frontend/
     #   dockerfile: Dockerfile.frontend
     restart: always
-    volumes:
-      - ../../frontend:/app
+    # volumes:
+    #   - ../../frontend:/app
     ports:
       - "3000:3000"
     networks:
