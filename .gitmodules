@@ -1,0 +1,6 @@
+[submodule "chaos-desk-app"]
+	path = chaos-desk-app
+	url = https://github.com/sanjivkannaa/chaos-desk-app
+[submodule "chaos-injection-engine"]
+	path = chaos-injection-engine
+	url = https://github.com/sanjivkannaa/chaos-injection-engine
