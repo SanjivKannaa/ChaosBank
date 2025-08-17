@@ -176,6 +176,9 @@ def credit():
     if not user:
         return jsonify({"error": "Account not found!"}), 400
 
+    if user.balance < amount:
+        return jsonify({"message": "insufficient balance"}), 400
+
     user.balance -= amount
 
     db.session.commit()
